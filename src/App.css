@@ -1,0 +1,237 @@
+.app-root {
+  background-color: #121212; /* Default for desktop */
+  height: 100svh;
+  width: 100vw;
+  display: grid;
+  grid-template-rows: 50px 1fr 50px; /* 3 rows */
+  grid-template-columns: repeat(12, 1fr); /* 12 equal columns */
+  column-gap: 5px; /* Gap between columns */
+}
+
+.body-root {
+  grid-row: 2; /* Occupies the 2nd row */
+  grid-column: 2 / 12; /* Occupies columns 2 to 11 */
+  background-color: #121212; /* Updated to #121212 */
+  display: grid;
+  grid-template-rows: repeat(10, 1fr); /* 10 equal rows */
+  grid-template-columns: repeat(10, 1fr); /* 10 equal columns */
+  /* row-gap: 5px; Gap between rows */
+  column-gap: 5px; /* Gap between columns */
+}
+
+.body-root-header {
+  grid-row: 1; /* Uses the 1st row */
+  grid-column: 1 / 11; /* Occupies all columns of the 1st row */
+  background-color: #fafafa; /* Light background color */
+  /* border-radius: 16px; Rounded corners */
+  display: flex;
+  justify-content: center; /* Horizontally center the contents */
+  align-items: center; /* Vertically center the contents */
+  color: darkblue; /* Text color */
+  font-style: italic;
+  font-weight: bold;
+}
+
+.body-root-sets {
+  grid-row: 2 / 5; /* Uses the 2nd and 3rd rows */
+  grid-column: 1 / 11; /* Occupies all columns of those rows */
+  /* background-color: #fafafa; Light background color */
+  display: grid;
+  grid-template-rows: 1fr; /* 1 row */
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+  /* column-gap: 10px; Gap between columns */
+}
+
+.body-root-sets-legend {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 column */
+  grid-template-rows: repeat(3, 1fr); /* 3 rows of equal height */
+  place-items: center; /* Vertically and horizontally center content in each cell */
+  background-color: black; /* Default background color */
+  color: white; /* Default text color */
+  font-weight: normal; /* Default font weight */
+  cursor: pointer; /* Pointer cursor for clickable divs */
+  padding: 10px;
+  /* border-radius: 8px; Optional for rounded corners */
+  /* font-weight: bold; Bold font weight for emphasis */
+  font-size: 1.25rem; /* Default font size */
+}
+
+.body-root-sets-legend p:first-of-type {
+  color: crimson;
+  font-size: 1.5rem; /* Larger font size for the first paragraph */
+  font-weight: bold; /* Bold font weight for emphasis */
+}
+
+.body-root-sets-data {
+  /* display: grid; Enable grid layout */
+  /* grid-template-rows: 1fr; Single row */
+  display: flex; /* Use flexbox for horizontal layout */
+  flex-direction: row; /* Arrange children in a single row */
+  grid-row: 1/-1; /* Span all rows */
+  grid-column: 2/-1; /* Start from the 2nd column to the last column */
+  background-color: purple; /* Set background color */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Disable vertical scrolling */
+  scrollbar-width: thin; /* Small scrollbar for Firefox */
+  scroll-behavior: smooth; /* Smooth scrolling */
+  /* grid-auto-flow: column; Arrange children in a single row */
+}
+
+/* Modern scrollbar styling for Webkit browsers (Chrome, Edge, Safari) */
+.body-root-sets-data::-webkit-scrollbar {
+  height: 8px; /* Small scrollbar height */
+}
+
+.body-root-sets-data::-webkit-scrollbar-track {
+  background: #121212; /* Match the background color */
+}
+
+.body-root-sets-data::-webkit-scrollbar-thumb {
+  background-color: #888; /* Visible scrollbar head color */
+  border-radius: 4px; /* Rounded scrollbar head */
+}
+
+.body-root-sets-data::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker color on hover */
+}
+
+/* Ensure each child spans all rows */
+.body-root-sets-data > div {
+  grid-row: 1 / -1; /* Span all rows */
+}
+
+.body-root-sets-each {
+  display: grid; /* Enable grid layout */
+  grid-template-rows: repeat(3, 1fr); /* 3 equal rows */
+  grid-template-columns: 1fr; /* 1 column */
+  min-width: 33.33%; /* Takes 1/3 of the width of the parent */
+  max-height: 100%; /* 100% of the height of the parent */
+  background-color: black; /* Default background color */
+  color: white; /* Default text color */
+  font-weight: normal; /* Default font weight */
+  cursor: pointer; /* Pointer cursor for clickable divs */
+  place-items: center; /* Center content vertically and horizontally */
+}
+
+.body-root-sets-each p:first-of-type {
+  color: crimson;
+  font-size: 1.5rem; /* Larger font size for the first paragraph */
+  font-weight: bold; /* Bold font weight for emphasis */
+}
+
+.body-root-sets-each.selected {
+  background-color: tomato; /* Highlighted background color */
+  color: black; /* Highlighted text color */
+  font-weight: bold; /* Highlighted font weight */
+}
+
+.body-root-control {
+  grid-row: 5 / 8; /* Uses the 2nd and 3rd rows */
+  grid-column: 1 / 11; /* Occupies all columns of those rows */
+  /* background-color: #fafafa; Light background color */
+  display: grid;
+  grid-template-columns: 1fr 75px 1fr; /* 3 columns: flexible, fixed, flexible */
+  grid-template-rows: 1fr; /* Single row */
+  /* background-color: #fafafa; Background color */
+}
+
+.body-root-control-left {
+  background-color: #121212; /* Background color for left section */
+  position: relative; /* Ensure positioning context for the inner div */
+}
+
+.body-root-control-left-inner {
+  background-color: #121212; /* Optional background color for the inner div */
+  position: absolute; /* Position relative to the parent */
+  top: 10px; /* 10px smaller from the top */
+  left: 10px; /* 10px smaller from the left */
+  right: 10px; /* 10px smaller from the right */
+  bottom: 10px; /* 10px smaller from the bottom */
+  /* border: 1px solid #fafafa; Border color */
+}
+
+.body-root-control-left-inner-scroll {
+  height: 100%; /* Full height of the parent */
+  width: 100%; /* Full width of the parent */
+  overflow-y: auto; /* Enable vertical scrolling */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  scroll-snap-type: y mandatory; /* Enable vertical scroll snapping */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+.body-root-control-left-inner-scroll::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in WebKit browsers (Chrome, Safari) */
+}
+
+.body-root-control-left-inner-scroll-item {
+  min-height: calc(100% / 3); /* Adjust height so only 3 items are visible */
+  display: flex;
+  justify-content: center; /* Center text horizontally */
+  align-items: center; /* Center text vertically */
+  color: #fafafa; /* Font color */
+  font-size: 1.5rem; /* Adjust font size */
+  /* border-bottom: 0.5px solid #ccc; Optional: Add a separator between items */
+  scroll-snap-align: start; /* Snap each item to the start of the scroll container */
+}
+
+.body-root-control-left-inner-scroll-item:last-child {
+  border-bottom: none; /* Remove border-bottom for the last item */
+}
+
+.body-root-control-center {
+  /* background-color: blue; Background color for center section */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.body-root-control-center > img {
+}
+
+.body-root-control-right {
+  background-color: #121212; /* Background color for left section */
+  position: relative; /* Ensure positioning context for the inner div */
+}
+
+.body-root-control-right-inner {
+  background-color: #121212; /* Optional background color for the inner div */
+  position: absolute; /* Position relative to the parent */
+  top: 10px; /* 10px smaller from the top */
+  left: 10px; /* 10px smaller from the left */
+  right: 10px; /* 10px smaller from the right */
+  bottom: 10px; /* 10px smaller from the bottom */
+  /* border: 1px solid #fafafa; Border color */
+}
+
+/* Mobile styles (max-width: 768px) */
+@media (max-width: 768px) {
+  .body-root-header {
+    font-size: 2rem; /* Font size for mobile */
+  }
+  .body-root-sets-each {
+    /* Add styles specific to mobile screens here */
+    font-size: 1.25rem;
+  }
+  .body-root-control-center > img {
+    max-height: 24px;
+    max-width: 24px;
+  }
+}
+
+/* Tablet styles (min-width: 769px and max-width: 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .body-root-sets-each {
+    /* Add styles specific to tablet screens here */
+  }
+}
+
+/* Desktop styles (min-width: 1025px) */
+@media (min-width: 1025px) {
+  .app-root {
+  }
+  .body-root-sets-each {
+    /* Add styles specific to desktop screens here */
+  }
+}
