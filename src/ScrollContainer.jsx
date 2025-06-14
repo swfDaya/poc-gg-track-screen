@@ -3,16 +3,20 @@ import PropTypes from "prop-types";
 import "./App.css";
 
 const ScrollContainer = React.forwardRef(
-  ({ data, selected, isWeights, onScroll }, ref) => {
+  ({ data, selected, isWeights, onScroll, setRotation }, ref) => {
     ScrollContainer.propTypes = {
       data: PropTypes.array.isRequired,
       selected: PropTypes.array.isRequired,
       isWeights: PropTypes.array.isRequired,
       onScroll: PropTypes.func.isRequired,
+      setRotation: PropTypes.func.isRequired, // Added setRotation to PropTypes
     };
 
     const [middleIndex, setMiddleIndex] = useState(1);
     const itemRefs = useRef([]);
+
+    const oldSetsRef = useRef(null); // Ref for ScrollContainer with `sets`
+    const oldWightsRef = useRef(null); // Ref for ScrollContainer with `weights`
 
     const [prevScrollPos, setPrevScrollPos] = useState(0);
 
@@ -30,6 +34,10 @@ const ScrollContainer = React.forwardRef(
                 ? Number(visibleValues[1]) * 4
                 : Number(visibleValues[1]);
               setMiddleIndex(newIndex);
+              // Haptic feedback
+              if (navigator.vibrate) {
+                navigator.vibrate(50);
+              }
             }
           }
         },
@@ -42,6 +50,33 @@ const ScrollContainer = React.forwardRef(
       const handleScroll = () => {
         const currentScrollPos = ref.current.scrollTop;
         setPrevScrollPos(currentScrollPos);
+        if (!ref.current) return;
+
+        const scrollTop = ref.current.scrollTop;
+
+        if (isWeights) {
+          const lastScrollTop = oldWightsRef.current || 0; // Default to 0 if not initialized
+          const scrollDirection = lastScrollTop > scrollTop ? "up" : "down";
+          oldWightsRef.current = scrollTop; // Update last scroll position for next comparison
+
+          // Update lastScrollTop after determining scroll direction
+          ref.current.lastScrollTop = scrollTop;
+          // For `weights`, rotate clockwise on scroll down, anti-clockwise on scroll up
+          setRotation((prevRotation) =>
+            scrollDirection === "up" ? prevRotation + 4 : prevRotation - 4
+          );
+        } else {
+          const lastScrollTop = oldSetsRef.current || 0; // Default to 0 if not initialized
+          const scrollDirection = lastScrollTop > scrollTop ? "up" : "down";
+          oldSetsRef.current = scrollTop; // Update last scroll position for next comparison
+
+          // Update lastScrollTop after determining scroll direction
+          ref.current.lastScrollTop = scrollTop;
+          // For `sets`, rotate anti-clockwise on scroll down, clockwise on scroll up
+          setRotation((prevRotation) =>
+            scrollDirection === "up" ? prevRotation - 4 : prevRotation + 4
+          );
+        }
       };
 
       const scrollContainer = ref.current;
@@ -78,7 +113,7 @@ const ScrollContainer = React.forwardRef(
       <div className="body-root-control-left-inner-scroll" ref={ref}>
         {data.map((item, index) => (
           <div
-            key={index}
+            key={item}
             ref={(el) => (itemRefs.current[index] = el)}
             data-value={item}
             className={`body-root-control-left-inner-scroll-item`}
@@ -88,8 +123,8 @@ const ScrollContainer = React.forwardRef(
               fontSize: index === middleIndex ? "1.75rem" : "1.25rem",
               borderBottom:
                 index === middleIndex + 1 || index === middleIndex - 2
-                  ? "0.5px solid #121212"
-                  : "0.5px solid #ccc",
+                  ? "0.25px solid #121212"
+                  : "0.25px solid #ccc",
             }}
           >
             {item}

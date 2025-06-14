@@ -55,6 +55,7 @@
   /* border-radius: 8px; Optional for rounded corners */
   /* font-weight: bold; Bold font weight for emphasis */
   font-size: 1.25rem; /* Default font size */
+  font-style: italic; /* Italic font style */
 }
 
 .body-root-sets-legend p:first-of-type {
@@ -131,7 +132,7 @@
   grid-column: 1 / 11; /* Occupies all columns of those rows */
   /* background-color: #fafafa; Light background color */
   display: grid;
-  grid-template-columns: 1fr 75px 1fr; /* 3 columns: flexible, fixed, flexible */
+  grid-template-columns: 1fr 50px 1fr; /* 3 columns: flexible, fixed, flexible */
   grid-template-rows: 1fr; /* Single row */
   /* background-color: #fafafa; Background color */
 }
@@ -172,7 +173,6 @@
   align-items: center; /* Center text vertically */
   color: #fafafa; /* Font color */
   font-size: 1.5rem; /* Adjust font size */
-  /* border-bottom: 0.5px solid #ccc; Optional: Add a separator between items */
   scroll-snap-align: start; /* Snap each item to the start of the scroll container */
 }
 
@@ -187,7 +187,19 @@
   align-items: center; /* Center vertically */
 }
 
-.body-root-control-center > img {
+.body-root-control-center > div {
+  height: 40px; /* Height of the center control */
+  width: 40px;
+  background-color: #fafafa; /* Background color for the center control */
+  border-radius: 50%; /* Make it circular */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.body-root-control-center > div > img {
+  max-height: 20px; /* Adjust height of the image */
+  max-width: 20px; /* Adjust width of the image */
 }
 
 .body-root-control-right {
@@ -215,23 +227,15 @@
     font-size: 1.25rem;
   }
   .body-root-control-center > img {
-    max-height: 24px;
-    max-width: 24px;
+    max-height: 20px;
+    max-width: 20px;
   }
 }
 
 /* Tablet styles (min-width: 769px and max-width: 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .body-root-sets-each {
-    /* Add styles specific to tablet screens here */
-  }
 }
 
 /* Desktop styles (min-width: 1025px) */
 @media (min-width: 1025px) {
-  .app-root {
-  }
-  .body-root-sets-each {
-    /* Add styles specific to desktop screens here */
-  }
 }
