@@ -71,7 +71,7 @@
   flex-direction: row; /* Arrange children in a single row */
   grid-row: 1/-1; /* Span all rows */
   grid-column: 2/-1; /* Start from the 2nd column to the last column */
-  background-color: purple; /* Set background color */
+  /* background-color: purple; Set background color */
   overflow-x: auto; /* Enable horizontal scrolling */
   overflow-y: hidden; /* Disable vertical scrolling */
   scrollbar-width: thin; /* Small scrollbar for Firefox */
@@ -127,94 +127,276 @@
   font-weight: bold; /* Highlighted font weight */
 }
 
+.body-root-control-new {
+  grid-row: 6 / 9; /* Uses the 2nd and 3rd rows */
+  grid-column: 1 / 11; /* Occupies all columns of those rows */
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 8 equal columns */
+  grid-template-rows: repeat(9, 1fr); /* 8 equal rows */
+  background-color: #282828; /* Dark background color */
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); */
+  /* box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); */
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.15); */
+  /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 16px; /* Rounded corners */
+  position: relative; /* Important for absolute positioning of children */
+  overflow: visible; /* Allow button to protrude outside */
+}
+
+.body-root-control-weights-scroll-container {
+  grid-row: 2/8; /* Last row */
+  grid-column: 2/4; /* 3rd column */
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  /* background-color: lightcyan; */
+  scroll-snap-type: y mandatory; /* Enable vertical scroll snap */
+  overflow-y: auto; /* Ensure scrolling is enabled */
+  height: 100%; /* Adjust as needed */
+  /* Optional: for smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+.body-root-control-sets-scroll-container {
+  grid-row: 2/8; /* Last row */
+  grid-column: 5/7; /* 3rd column */
+  /* background-color: lightcyan; */
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  scroll-snap-type: y mandatory; /* Enable vertical scroll snap */
+  overflow-y: auto; /* Ensure scrolling is enabled */
+  height: 100%; /* Adjust as needed */
+  /* Optional: for smooth scrolling */
+  scroll-behavior: smooth;
+}
+
+.body-root-control-helm-scroll-container {
+  grid-row: 2/8; /* Last row */
+  grid-column: 4/5; /* 3rd column */
+  /* background-color: greenyellow; */
+  display: flex;
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+}
+
+.body-root-control-helm-scroll-container > img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover; /* Cover the entire container */
+}
+
+.body-root-control-new-save-button-container {
+  grid-row: 9; /* Last row */
+  grid-column: 2; /* 3rd column */
+  position: relative; /* Positioning context for the button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body-root-control-new-tick-button-container {
+  grid-row: 9; /* Last row */
+  grid-column: 4; /* 3rd column */
+  position: relative; /* Positioning context for the button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body-root-control-new-clock-button-container {
+  grid-row: 9; /* Last row */
+  grid-column: 6; /* 3rd column */
+  position: relative; /* Positioning context for the button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-button {
+  position: absolute;
+  width: 60px; /* Fixed size for perfect circle */
+  height: 60px; /* Fixed size for perfect circle */
+  border-radius: 50%;
+  background: #3a3a3a;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  /* Position so half the button protrudes below the grid */
+  bottom: -30px; /* Half the button height to make it protrude */
+
+  /* Remove default button outline and focus styles */
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  -webkit-touch-callout: none; /* Disable callout on iOS */
+  -webkit-user-select: none; /* Disable text selection */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  /* Outer shadow for depth */
+  box-shadow: 0 0 0 1px #1a1a1a, 0 4px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.save-button:focus {
+  outline: none; /* Remove focus outline */
+}
+
+.save-button:hover {
+  background: #404040;
+  box-shadow: 0 0 0 1px #1a1a1a, 0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.save-button:active {
+  background: #2a2a2a;
+  box-shadow: 0 0 0 1px #1a1a1a, 0 1px 2px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+.save-icon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1); /* Makes the icon white */
+  transition: transform 0.3s ease;
+  pointer-events: none; /* Prevents icon from interfering with button clicks */
+}
+
+.save-button:hover .save-icon {
+  transform: scale(1.1); /* Slight scale effect on hover */
+}
+
 .body-root-control {
-  grid-row: 5 / 8; /* Uses the 2nd and 3rd rows */
+  grid-row: 6 / 9; /* Uses the 2nd and 3rd rows */
   grid-column: 1 / 11; /* Occupies all columns of those rows */
   /* background-color: #fafafa; Light background color */
   display: grid;
   grid-template-columns: 1fr 50px 1fr; /* 3 columns: flexible, fixed, flexible */
   grid-template-rows: 1fr; /* Single row */
-  /* background-color: #fafafa; Background color */
+  background-color: #282828; /* Dark background color */
+  border-radius: 16px; /* Rounded corners */
 }
 
 .body-root-control-left {
-  background-color: #121212; /* Background color for left section */
+  /* background-color: #121212; Background color for left section */
   position: relative; /* Ensure positioning context for the inner div */
 }
 
 .body-root-control-left-inner {
-  background-color: #121212; /* Optional background color for the inner div */
+  background-color: #fafafa; /*Optional background color for the inner div */
   position: absolute; /* Position relative to the parent */
   top: 10px; /* 10px smaller from the top */
-  left: 10px; /* 10px smaller from the left */
-  right: 10px; /* 10px smaller from the right */
+  left: 0px; /* 10px smaller from the left */
+  right: 0px; /* 10px smaller from the right */
   bottom: 10px; /* 10px smaller from the bottom */
   /* border: 1px solid #fafafa; Border color */
+  display: flex;
+  justify-content: right; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+
+.body-root-control-left-inner-circle {
+  position: absolute;
+  background-color: brown;
 }
 
 .body-root-control-left-inner-scroll {
-  height: 100%; /* Full height of the parent */
-  width: 100%; /* Full width of the parent */
-  overflow-y: auto; /* Enable vertical scrolling */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  /* background-color: blue; */
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100%; /* Fixed height is important */
+  width: 100%;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  scroll-snap-type: y mandatory; /* Enable vertical scroll snapping */
-  scrollbar-width: none; /* Hide scrollbar in Firefox */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
 }
 
+/* Hide scrollbar for cleaner look */
 .body-root-control-left-inner-scroll::-webkit-scrollbar {
-  display: none; /* Hide scrollbar in WebKit browsers (Chrome, Safari) */
+  display: none;
+}
+
+.body-root-control-left-inner-scroll-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  height: 100%;
 }
 
 .body-root-control-left-inner-scroll-item {
-  min-height: calc(100% / 3); /* Adjust height so only 3 items are visible */
+  min-height: 33.33%; /* Each item takes 1/3 of the height */
+  scroll-snap-align: center;
+  width: 100%;
   display: flex;
-  justify-content: center; /* Center text horizontally */
-  align-items: center; /* Center text vertically */
-  color: #fafafa; /* Font color */
-  font-size: 1.5rem; /* Adjust font size */
-  scroll-snap-align: start; /* Snap each item to the start of the scroll container */
-}
-
-.body-root-control-left-inner-scroll-item:last-child {
-  border-bottom: none; /* Remove border-bottom for the last item */
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  flex-shrink: 0; /* Prevent items from shrinking */
 }
 
 .body-root-control-center {
-  /* background-color: blue; Background color for center section */
+  /* background-color: blue; */
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
+  position: relative; /* Ensure positioning context for the inner div */
 }
 
 .body-root-control-center > div {
-  height: 40px; /* Height of the center control */
-  width: 40px;
+  position: absolute; /* Position relative to the parent */
+  top: 10px; /* 10px smaller from the top */
+  bottom: 10px; /* 10px smaller from the bottom */
+  left: 0px; /* 10px smaller from the left */
+  right: 0px; /* 10px smaller from the right */
   background-color: #fafafa; /* Background color for the center control */
-  border-radius: 50%; /* Make it circular */
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
 }
 
 .body-root-control-center > div > img {
-  max-height: 20px; /* Adjust height of the image */
-  max-width: 20px; /* Adjust width of the image */
+  max-height: 32px; /* Adjust height of the image */
+  max-width: 32px; /* Adjust width of the image */
 }
 
 .body-root-control-right {
-  background-color: #121212; /* Background color for left section */
+  /* background-color: #121212; Background color for left section */
   position: relative; /* Ensure positioning context for the inner div */
 }
 
 .body-root-control-right-inner {
-  background-color: #121212; /* Optional background color for the inner div */
+  background-color: #fafafa; /* Optional background color for the inner div */
   position: absolute; /* Position relative to the parent */
   top: 10px; /* 10px smaller from the top */
-  left: 10px; /* 10px smaller from the left */
-  right: 10px; /* 10px smaller from the right */
+  left: 0px; /* 10px smaller from the left */
+  right: 0px; /* 10px smaller from the right */
   bottom: 10px; /* 10px smaller from the bottom */
   /* border: 1px solid #fafafa; Border color */
+  display: flex;
+  justify-content: left; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 
 /* Mobile styles (max-width: 768px) */
@@ -230,6 +412,16 @@
     max-height: 20px;
     max-width: 20px;
   }
+
+  /* Mobile-specific circle positioning */
+  .body-root-control-left-inner-circle {
+    max-width: 14vw;
+    max-height: 14vw;
+    border-radius: 50%;
+    right: 15%;
+    bottom: -7vw;
+    z-index: 10;
+  }
 }
 
 /* Tablet styles (min-width: 769px and max-width: 1024px) */
@@ -239,3 +431,36 @@
 /* Desktop styles (min-width: 1025px) */
 @media (min-width: 1025px) {
 }
+
+.body-root-control-left-inner-scroll-item,
+.body-root-control-right-inner-scroll-item {
+  scroll-snap-align: center; /* Snap each item to the center */
+}
+
+.body-root-control-left-inner-scroll,
+.body-root-control-right-inner-scroll {
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+.body-root-control-left-inner-scroll {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100%; /* Ensure this has a fixed height */
+}
+
+.body-root-control-left-inner-scroll-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* .body-root-control-left-inner-scroll-item {
+  scroll-snap-align: center;
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0;
+  transition: all 0.3s ease;
+} */

@@ -3,78 +3,98 @@ import PropTypes from "prop-types";
 import "./App.css";
 
 const ScrollContainer = React.forwardRef(
-  ({ data, selected, isWeights, onScroll, setRotation }, ref) => {
-    ScrollContainer.propTypes = {
-      data: PropTypes.array.isRequired,
-      selected: PropTypes.array.isRequired,
-      isWeights: PropTypes.array.isRequired,
-      onScroll: PropTypes.func.isRequired,
-      setRotation: PropTypes.func.isRequired, // Added setRotation to PropTypes
-    };
-
+  ({ data, selected, isWeights, setRotation }, ref) => {
     const [middleIndex, setMiddleIndex] = useState(1);
     const itemRefs = useRef([]);
+    const oldSetsRef = useRef(null);
+    const oldWightsRef = useRef(null);
+    const scrollEndTimer = useRef(null);
+    const isScrolling = useRef(false);
 
-    const oldSetsRef = useRef(null); // Ref for ScrollContainer with `sets`
-    const oldWightsRef = useRef(null); // Ref for ScrollContainer with `weights`
-
-    const [prevScrollPos, setPrevScrollPos] = useState(0);
+    // Calculate item height based on container height to show exactly 3 items
+    const itemHeight = `${100 / 3}%`;
 
     useEffect(() => {
+      if (!ref.current) return;
+
       const observer = new IntersectionObserver(
         (entries) => {
-          const visible = entries.filter((entry) => entry.isIntersecting);
-          if (visible.length > 0) {
-            const visibleValues = visible.map(
-              (entry) => entry.target.dataset.value
-            );
+          if (!isScrolling.current) return;
 
-            if (visibleValues.length > 1) {
-              const newIndex = isWeights
-                ? Number(visibleValues[1]) * 4
-                : Number(visibleValues[1]);
-              setMiddleIndex(newIndex);
-              // Haptic feedback
-              if (navigator.vibrate) {
-                navigator.vibrate(50);
+          const visibleEntries = entries.filter(
+            (entry) => entry.isIntersecting
+          );
+
+          if (visibleEntries.length >= 3 && ref.current) {
+            const containerRect = ref.current.getBoundingClientRect();
+            const containerCenter =
+              containerRect.top + containerRect.height / 2;
+
+            let closestEntry = null;
+            let minDistance = Infinity;
+
+            visibleEntries.forEach((entry) => {
+              const entryRect = entry.target.getBoundingClientRect();
+              const entryCenter = entryRect.top + entryRect.height / 2;
+              const distance = Math.abs(containerCenter - entryCenter);
+
+              if (distance < minDistance) {
+                minDistance = distance;
+                closestEntry = entry;
+              }
+            });
+
+            if (closestEntry) {
+              const middleValue =
+                closestEntry.target.getAttribute("data-value");
+              const newIndex = data.findIndex(
+                (item) => String(item) === middleValue
+              );
+
+              if (newIndex !== -1 && newIndex !== middleIndex) {
+                setMiddleIndex(newIndex);
               }
             }
           }
         },
         {
-          root: ref.current, // Observe within the parent element
-          threshold: 0.1, // Adjust threshold to ensure more elements are considered visible
+          root: ref.current,
+          threshold: Array.from({ length: 100 }, (_, i) => i * 0.01),
+          rootMargin: "0px",
         }
       );
 
       const handleScroll = () => {
+        isScrolling.current = true;
+        clearTimeout(scrollEndTimer.current);
+
+        scrollEndTimer.current = setTimeout(() => {
+          isScrolling.current = false;
+          if (middleIndex !== -1 && itemRefs.current[middleIndex]) {
+            itemRefs.current[middleIndex].scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+          }
+        }, 150);
+
         const currentScrollPos = ref.current.scrollTop;
-        setPrevScrollPos(currentScrollPos);
-        if (!ref.current) return;
 
-        const scrollTop = ref.current.scrollTop;
-
-        if (isWeights) {
-          const lastScrollTop = oldWightsRef.current || 0; // Default to 0 if not initialized
-          const scrollDirection = lastScrollTop > scrollTop ? "up" : "down";
-          oldWightsRef.current = scrollTop; // Update last scroll position for next comparison
-
-          // Update lastScrollTop after determining scroll direction
-          ref.current.lastScrollTop = scrollTop;
-          // For `weights`, rotate clockwise on scroll down, anti-clockwise on scroll up
-          setRotation((prevRotation) =>
-            scrollDirection === "up" ? prevRotation + 4 : prevRotation - 4
+        if (!isWeights) {
+          const lastScrollTop = oldWightsRef.current || 0;
+          const scrollDirection =
+            lastScrollTop > currentScrollPos ? "up" : "down";
+          oldWightsRef.current = currentScrollPos;
+          setRotation((prev) =>
+            scrollDirection === "up" ? prev + 4 : prev - 4
           );
         } else {
-          const lastScrollTop = oldSetsRef.current || 0; // Default to 0 if not initialized
-          const scrollDirection = lastScrollTop > scrollTop ? "up" : "down";
-          oldSetsRef.current = scrollTop; // Update last scroll position for next comparison
-
-          // Update lastScrollTop after determining scroll direction
-          ref.current.lastScrollTop = scrollTop;
-          // For `sets`, rotate anti-clockwise on scroll down, clockwise on scroll up
-          setRotation((prevRotation) =>
-            scrollDirection === "up" ? prevRotation - 4 : prevRotation + 4
+          const lastScrollTop = oldSetsRef.current || 0;
+          const scrollDirection =
+            lastScrollTop > currentScrollPos ? "up" : "down";
+          oldSetsRef.current = currentScrollPos;
+          setRotation((prev) =>
+            scrollDirection === "up" ? prev - 4 : prev + 4
           );
         }
       };
@@ -84,55 +104,87 @@ const ScrollContainer = React.forwardRef(
         scrollContainer.addEventListener("scroll", handleScroll);
       }
 
-      itemRefs.current.forEach((ref) => {
-        if (ref) observer.observe(ref);
-      });
+      // Observe all items
+      setTimeout(() => {
+        itemRefs.current.forEach((el) => {
+          if (el) observer.observe(el);
+        });
+      }, 0);
 
       return () => {
+        clearTimeout(scrollEndTimer.current);
         if (scrollContainer) {
           scrollContainer.removeEventListener("scroll", handleScroll);
         }
-        itemRefs.current.forEach((ref) => {
-          if (ref) observer.unobserve(ref);
-        });
+        observer.disconnect();
       };
-    }, [onScroll, ref, prevScrollPos]);
+    }, [data, middleIndex, ref, isWeights, setRotation]);
 
     useEffect(() => {
       const scrollContainer = ref.current;
+      const actualSelected = isWeights ? selected * 4 : selected;
 
-      if (selected !== undefined && scrollContainer) {
-        itemRefs.current[isWeights ? selected * 4 : selected].scrollIntoView({
-          behavior: "smooth",
+      if (
+        selected !== undefined &&
+        scrollContainer &&
+        itemRefs.current[actualSelected]
+      ) {
+        const scrollOptions = {
+          behavior: "auto", // Use 'auto' for initial positioning
           block: "center",
-        });
+        };
+
+        if (isWeights) {
+          itemRefs.current[actualSelected].scrollIntoView(scrollOptions);
+        } else {
+          const timeout = setTimeout(() => {
+            itemRefs.current[actualSelected].scrollIntoView(scrollOptions);
+          }, 0);
+          return () => clearTimeout(timeout);
+        }
       }
-    }, [selected]);
+    }, [isWeights, ref, selected]);
 
     return (
       <div className="body-root-control-left-inner-scroll" ref={ref}>
-        {data.map((item, index) => (
-          <div
-            key={item}
-            ref={(el) => (itemRefs.current[index] = el)}
-            data-value={item}
-            className={`body-root-control-left-inner-scroll-item`}
-            style={{
-              color: index === middleIndex ? "crimson" : "#fafafa",
-              fontWeight: index === middleIndex ? "bold" : "normal",
-              fontSize: index === middleIndex ? "1.75rem" : "1.25rem",
-              borderBottom:
-                index === middleIndex + 1 || index === middleIndex - 2
-                  ? "0.25px solid #121212"
-                  : "0.25px solid #ccc",
-            }}
-          >
-            {item}
-          </div>
-        ))}
+        <div className="body-root-control-left-inner-scroll-list">
+          {/* Add padding elements to center the first and last items */}
+          <div style={{ height: itemHeight, width: "100%" }} />
+
+          {data.map((item, index) => (
+            <div
+              key={`${item}-${index}`}
+              ref={(el) => (itemRefs.current[index] = el)}
+              data-value={item}
+              className="body-root-control-left-inner-scroll-item"
+              style={{
+                height: itemHeight,
+                color: index === middleIndex ? "crimson" : "#fafafa",
+                fontWeight: index === middleIndex ? "bold" : "normal",
+                fontSize: index === middleIndex ? "1.75rem" : "1.25rem",
+                borderBottom:
+                  index === middleIndex - 2 || index === middleIndex + 1
+                    ? "0.75px solid #282828"
+                    : "0.75px solid #fafafa",
+              }}
+            >
+              {item}
+            </div>
+          ))}
+
+          {/* Add padding elements to center the first and last items */}
+          <div style={{ height: itemHeight, width: "100%" }} />
+        </div>
       </div>
     );
   }
 );
+
+ScrollContainer.propTypes = {
+  data: PropTypes.array.isRequired,
+  selected: PropTypes.number.isRequired,
+  isWeights: PropTypes.bool.isRequired,
+  setRotation: PropTypes.func.isRequired,
+};
 
 export default ScrollContainer;

@@ -3,10 +3,7 @@
 import { useState, useRef } from "react";
 import "./App.css";
 import ScrollContainer from "./scrollContainer";
-import helm from "./assets/helm6white.png";
-import check from "./assets/check.svg";
-import clock from "./assets/clock.svg";
-import reset from "./assets/reset.svg";
+import helmBlack6 from "./assets/6helmBlack.png";
 import SwipeMe from "./SwipeMe";
 
 const exerciseData = [
@@ -17,12 +14,12 @@ const exerciseData = [
   { set: 5, weight: 30, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
 ];
 
-// const handleUploadCloudClick = () => {
-//   // Haptic feedback
-//   if (navigator.vibrate) {
-//     navigator.vibrate(50);
-//   }
-// };
+const handleUploadCloudClick = () => {
+  // Haptic feedback
+  if (navigator.vibrate) {
+    navigator.vibrate(50);
+  }
+};
 
 function App() {
   const [selectedSet, setSelectedSet] = useState(0);
@@ -35,7 +32,7 @@ function App() {
     Array.from({ length: 200 }, (_, i) => (i + 1) * 0.25)
   );
   const [rotation, setRotation] = useState(0); // State to track image rotation
-  const repsRef = useRef(null); // Ref for ScrollContainer with `sets`
+  const setsRef = useRef(null); // Ref for ScrollContainer with `sets`
   const weightsRef = useRef(null); // Ref for ScrollContainer with `weights`
 
   const [swipeKey, setSwipeKey] = useState(0); // State to trigger re-render of SwipeMe
@@ -79,48 +76,43 @@ function App() {
             ))}
           </div>
         </div>
-        <div className="body-root-control-new">
-          <div className="body-root-control-weights-scroll-container">
-            <ScrollContainer
-              data={weights}
-              selected={selectedWeight} // Example selected index for `weights`
-              ref={weightsRef}
-              isWeights={true} // Indicate this is for `weights`
-              // onScroll={() => handleScroll(weightsRef, false)} // Pass scroll handler for `weights`
-              setRotation={setRotation} // Pass setRotation to update rotation state
-            />
+        <div className="body-root-control">
+          <div className="body-root-control-left">
+            <div className="body-root-control-left-inner">
+              <div className="body-root-control-left-inner-scroll">
+                <ScrollContainer
+                  data={reps}
+                  selected={selectedReps} // Example selected index for `sets`
+                  ref={setsRef}
+                  isWeights={false} // Indicate this is for `sets`
+                  onScroll={() => handleScroll(setsRef, true)} // Pass scroll handler for `sets`
+                  setRotation={setRotation} // Pass setRotation to update rotation state
+                />
+                <div className="body-root-control-left-inner-circle"></div>
+              </div>
+            </div>
           </div>
-          <div className="body-root-control-helm-scroll-container">
-            <img
-              src={helm || "/placeholder.svg"}
-              alt="helm6 Icon"
-              style={{ transform: `rotate(${rotation * 1.5}deg)` }} // Apply rotation
-            />
+          <div className="body-root-control-center">
+            <div>
+              <img
+                src={helmBlack6 || "/placeholder.svg"}
+                alt="helm6 Icon"
+                style={{ transform: `rotate(${rotation * 1.5}deg)` }} // Apply rotation
+              />
+            </div>
           </div>
-          <div className="body-root-control-sets-scroll-container">
-            <ScrollContainer
-              data={reps}
-              selected={selectedReps} // Example selected index for `weights`
-              ref={repsRef}
-              isWeights={false} // Indicate this is for `weights`
-              // onScroll={() => handleScroll(repsRef, false)} // Pass scroll handler for `weights`
-              setRotation={setRotation} // Pass setRotation to update rotation state
-            />
-          </div>
-          <div className="body-root-control-new-save-button-container">
-            <button className="save-button">
-              <img className="save-icon" src={reset} />
-            </button>
-          </div>
-          <div className="body-root-control-new-tick-button-container">
-            <button className="save-button">
-              <img className="save-icon" src={clock} />
-            </button>
-          </div>
-          <div className="body-root-control-new-clock-button-container">
-            <button className="save-button">
-              <img className="save-icon" src={check} />
-            </button>
+          <div className="body-root-control-right">
+            <div className="body-root-control-right-inner">
+              <ScrollContainer
+                data={weights}
+                selected={selectedWeight} // Example selected index for `weights`
+                ref={weightsRef}
+                isWeights={true} // Indicate this is for `weights`
+                onScroll={() => handleScroll(weightsRef, false)} // Pass scroll handler for `weights`
+                setRotation={setRotation} // Pass setRotation to update rotation state
+              />
+              {/* <div className="body-root-control-left-inner-circle"></div> */}
+            </div>
           </div>
         </div>
         <SwipeMe
