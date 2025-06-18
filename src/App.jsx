@@ -28,6 +28,8 @@ function App() {
   const [selectedSet, setSelectedSet] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState(exerciseData[0].weight); // State for selected weight
   const [selectedReps, setSelectedReps] = useState(exerciseData[0].reps); // State for selected reps
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const addEmptyElements = (array) => ["", ...array, ""];
 
   const reps = addEmptyElements(Array.from({ length: 50 }, (_, i) => i + 1));
@@ -44,6 +46,7 @@ function App() {
     setSelectedSet(index);
     setSelectedWeight(exerciseData[index].weight); // Update selected weight based on set
     setSelectedReps(exerciseData[index].reps); // Update selected reps based on set
+    setRefreshKey((prev) => prev + 1); // Always increment to force remount
   };
 
   return (
@@ -82,6 +85,7 @@ function App() {
         <div className="body-root-control-new">
           <div className="body-root-control-weights-scroll-container">
             <ScrollContainer
+              key={refreshKey} // Use refreshKey to force remount
               data={weights}
               selected={selectedWeight} // Example selected index for `weights`
               ref={weightsRef}
@@ -99,6 +103,7 @@ function App() {
           </div>
           <div className="body-root-control-sets-scroll-container">
             <ScrollContainer
+              key={refreshKey} // Use refreshKey to force remount
               data={reps}
               selected={selectedReps} // Example selected index for `weights`
               ref={repsRef}
