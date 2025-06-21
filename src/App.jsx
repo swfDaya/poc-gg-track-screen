@@ -1,7 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+"use client";
+
+import { useState, useRef } from "react";
 import "./App.css";
 import ScrollContainer from "./scrollContainer";
-import helm6 from "./assets/helm6.png";
+import helm from "./assets/helm6white.png";
+import check from "./assets/check.svg";
+import clock from "./assets/clock.svg";
+import reset from "./assets/reset.svg";
+import SwipeMe from "./SwipeMe";
 
 const exerciseData = [
   { set: 1, weight: 10, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
@@ -13,73 +19,77 @@ const exerciseData = [
 
 function App() {
   const [selectedSet, setSelectedSet] = useState(0);
+  const [selectedWeight, setSelectedWeight] = useState(exerciseData[0].weight); // State for selected weight
+  const [selectedReps, setSelectedReps] = useState(exerciseData[0].reps); // State for selected reps
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const addEmptyElements = (array) => ["", ...array, ""];
 
-  const sets = addEmptyElements(Array.from({ length: 50 }, (_, i) => i + 1));
+  const reps = addEmptyElements(Array.from({ length: 50 }, (_, i) => i + 1));
   const weights = addEmptyElements(
     Array.from({ length: 200 }, (_, i) => (i + 1) * 0.25)
   );
   const [rotation, setRotation] = useState(0); // State to track image rotation
-  const setsRef = useRef(null); // Ref for ScrollContainer with `sets`
-  const oldSetsRef = useRef(null); // Ref for ScrollContainer with `sets`
+  const repsRef = useRef(null); // Ref for ScrollContainer with `sets`
   const weightsRef = useRef(null); // Ref for ScrollContainer with `weights`
-  const oldWightsRef = useRef(null); // Ref for ScrollContainer with `weights`
 
-  const handleScroll = (ref, isSets) => {
-    if (!ref.current) return;
+  const [swipeKey, setSwipeKey] = useState(0); // State to trigger re-render of SwipeMe
 
-    const scrollTop = ref.current.scrollTop;
+  const handleSetClick = (index) => {
+    setSelectedSet(index);
+    setSelectedWeight(exerciseData[index].weight); // Update selected weight based on set
+    setSelectedReps(exerciseData[index].reps); // Update selected reps based on set
+    setRefreshKey((prev) => prev + 1); // Always increment to force remount
+  };
 
-    if (isSets) {
-      const lastScrollTop = oldSetsRef.current || 0; // Default to 0 if not initialized
-      const scrollDirection = lastScrollTop > scrollTop ? "up" : "down";
-      oldSetsRef.current = scrollTop; // Update last scroll position for next comparison
+  // Haptic feedback handlers
+  const handleResetClick = () => {
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+    setRefreshKey((prev) => prev + 1); // Always increment to force remount
+  };
 
-      // Update lastScrollTop after determining scroll direction
-      ref.current.lastScrollTop = scrollTop;
-      // For `sets`, rotate anti-clockwise on scroll down, clockwise on scroll up
-      setRotation((prevRotation) =>
-        scrollDirection === "up" ? prevRotation - 4 : prevRotation + 4
-      );
-    } else {
-      const lastScrollTop = oldWightsRef.current || 0; // Default to 0 if not initialized
-      const scrollDirection = lastScrollTop > scrollTop ? "up" : "down";
-      oldWightsRef.current = scrollTop; // Update last scroll position for next comparison
-
-      // Update lastScrollTop after determining scroll direction
-      ref.current.lastScrollTop = scrollTop;
-      // For `weights`, rotate clockwise on scroll down, anti-clockwise on scroll up
-      setRotation((prevRotation) =>
-        scrollDirection === "up" ? prevRotation + 4 : prevRotation - 4
-      );
+  const handleClockClick = () => {
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
     }
   };
 
-  useEffect(() => {
-    const metaThemeColor = document.querySelector("meta[name=theme-color]");
-    if (metaThemeColor) {
-      metaThemeColor.setAttribute("content", "#6200ee");
+  const handleCheckClick = () => {
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
     }
-  }, []);
+  };
 
   return (
     <div className="app-root">
       <div className="body-root">
-        <div className="body-root-header">2. Shoulder press</div>
+        <div className="body-root-header" role="heading" tabIndex="0">
+          2. Shoulder press
+        </div>
         <div className="body-root-sets">
           <div className="body-root-sets-legend">
-            <p>Set</p>
-            <p>Weight</p>
-            <p>Reps</p>
+            <p>set</p>
+            <p>weight</p>
+            <p>reps</p>
           </div>
           <div className="body-root-sets-data">
             {exerciseData.map((exercise, index) => (
               <div
-                key={index}
+                key={exercise.set}
                 className={`body-root-sets-each ${
                   selectedSet === index ? "selected" : ""
                 }`}
-                onClick={() => setSelectedSet(index)}
+                onClick={() => handleSetClick(index)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") setSelectedSet(index);
+                }} // Add keyboard support
+                role="button" // Add role for accessibility
+                tabIndex="0" // Make it focusable
               >
                 <p>{exercise.set}</p>
                 <p>{exercise.weight}</p>
@@ -88,37 +98,65 @@ function App() {
             ))}
           </div>
         </div>
-        <div className="body-root-control">
-          <div className="body-root-control-left">
-            <div className="body-root-control-left-inner">
-              <ScrollContainer
-                data={sets}
-                selected={20} // Example selected index for `sets`
-                ref={setsRef}
-                isWeights={false} // Indicate this is for `sets`
-                onScroll={() => handleScroll(setsRef, true)} // Pass scroll handler for `sets`
-              />
-            </div>
-          </div>
-          <div className="body-root-control-center">
-            <img
-              src={helm6}
-              alt="helm6 Icon"
-              style={{ transform: `rotate(${rotation}deg)` }} // Apply rotation
+        <div className="body-root-control-new">
+          <div className="body-root-control-weights-scroll-container">
+            <ScrollContainer
+              key={refreshKey} // Use refreshKey to force remount
+              data={weights}
+              selected={selectedWeight} // Example selected index for `weights`
+              ref={weightsRef}
+              isWeights={true} // Indicate this is for `weights`
+              // onScroll={() => handleScroll(weightsRef, false)} // Pass scroll handler for `weights`
+              setRotation={setRotation} // Pass setRotation to update rotation state
             />
           </div>
-          <div className="body-root-control-right">
-            <div className="body-root-control-right-inner">
-              <ScrollContainer
-                data={weights}
-                selected={30} // Example selected index for `weights`
-                ref={weightsRef}
-                isWeights={true} // Indicate this is for `weights`
-                onScroll={() => handleScroll(weightsRef, false)} // Pass scroll handler for `weights`
-              />
-            </div>
+          <div className="body-root-control-helm-scroll-container">
+            <img
+              src={helm || "/placeholder.svg"}
+              alt="helm6 Icon"
+              style={{ transform: `rotate(${rotation * 1.25}deg)` }} // Apply rotation
+            />
+          </div>
+          <div className="body-root-control-sets-scroll-container">
+            <ScrollContainer
+              key={refreshKey} // Use refreshKey to force remount
+              data={reps}
+              selected={selectedReps} // Example selected index for `weights`
+              ref={repsRef}
+              isWeights={false} // Indicate this is for `weights`
+              // onScroll={() => handleScroll(repsRef, false)} // Pass scroll handler for `weights`
+              setRotation={setRotation} // Pass setRotation to update rotation state
+            />
+          </div>
+          <div className="body-root-control-new-save-button-container">
+            <button
+              className="save-button"
+              onClick={handleResetClick}
+              aria-label="Reset"
+            >
+              <img className="save-icon" src={reset} alt="Reset" />
+            </button>
+          </div>
+          <div className="body-root-control-new-tick-button-container">
+            <button
+              className="save-button"
+              onClick={handleClockClick}
+              aria-label="Clock"
+            >
+              <img className="save-icon" src={clock} alt="Clock" />
+            </button>
+          </div>
+          <div className="body-root-control-new-clock-button-container">
+            <button className="save-button" onClick={handleCheckClick} aria-label="Check">
+              <img className="save-icon" src={check} alt="Check" />
+            </button>
           </div>
         </div>
+        <SwipeMe
+          key={`swipe-${swipeKey}`}
+          swipeKey={swipeKey}
+          setSwipeKey={setSwipeKey}
+        />
       </div>
     </div>
   );
