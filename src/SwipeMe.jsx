@@ -11,10 +11,6 @@ import "./SwipeMe.css";
 import PropTypes from "prop-types";
 
 const SwipeMe = ({ swipeKey, setSwipeKey }) => {
-  SwipeMe.propTypes = {
-    swipeKey: PropTypes.number.isRequired,
-    setSwipeKey: PropTypes.func.isRequired,
-  };
 
   const containerRef = useRef(null);
   const sliderRef = useRef(null);
