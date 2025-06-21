@@ -17,13 +17,6 @@ const exerciseData = [
   { set: 5, weight: 30, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
 ];
 
-// const handleUploadCloudClick = () => {
-//   // Haptic feedback
-//   if (navigator.vibrate) {
-//     navigator.vibrate(50);
-//   }
-// };
-
 function App() {
   const [selectedSet, setSelectedSet] = useState(0);
   const [selectedWeight, setSelectedWeight] = useState(exerciseData[0].weight); // State for selected weight
@@ -47,6 +40,29 @@ function App() {
     setSelectedWeight(exerciseData[index].weight); // Update selected weight based on set
     setSelectedReps(exerciseData[index].reps); // Update selected reps based on set
     setRefreshKey((prev) => prev + 1); // Always increment to force remount
+  };
+
+  // Haptic feedback handlers
+  const handleResetClick = () => {
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+    setRefreshKey((prev) => prev + 1); // Always increment to force remount
+  };
+
+  const handleClockClick = () => {
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+  };
+
+  const handleCheckClick = () => {
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
   };
 
   return (
@@ -98,7 +114,7 @@ function App() {
             <img
               src={helm || "/placeholder.svg"}
               alt="helm6 Icon"
-              style={{ transform: `rotate(${rotation * 1.5}deg)` }} // Apply rotation
+              style={{ transform: `rotate(${rotation * 1.25}deg)` }} // Apply rotation
             />
           </div>
           <div className="body-root-control-sets-scroll-container">
@@ -113,18 +129,26 @@ function App() {
             />
           </div>
           <div className="body-root-control-new-save-button-container">
-            <button className="save-button">
-              <img className="save-icon" src={reset} />
+            <button
+              className="save-button"
+              onClick={handleResetClick}
+              aria-label="Reset"
+            >
+              <img className="save-icon" src={reset} alt="Reset" />
             </button>
           </div>
           <div className="body-root-control-new-tick-button-container">
-            <button className="save-button">
-              <img className="save-icon" src={clock} />
+            <button
+              className="save-button"
+              onClick={handleClockClick}
+              aria-label="Clock"
+            >
+              <img className="save-icon" src={clock} alt="Clock" />
             </button>
           </div>
           <div className="body-root-control-new-clock-button-container">
-            <button className="save-button">
-              <img className="save-icon" src={check} />
+            <button className="save-button" onClick={handleCheckClick}>
+              <img className="save-icon" src={check} alt="Check" />
             </button>
           </div>
         </div>

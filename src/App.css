@@ -134,15 +134,13 @@
   grid-template-columns: repeat(7, 1fr); /* 8 equal columns */
   grid-template-rows: repeat(9, 1fr); /* 8 equal rows */
   background-color: #282828; /* Dark background color */
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); */
-  /* box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); */
-  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.15); */
-  /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   border-radius: 16px; /* Rounded corners */
   position: relative; /* Important for absolute positioning of children */
   overflow: visible; /* Allow button to protrude outside */
+
+  isolation: isolate; /* Creates new stacking context */
 }
 
 .body-root-control-weights-scroll-container {

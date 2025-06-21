@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "@use-gesture/react";
-import chevronRight from "./assets/chevrons-right.svg";
+// import chevronRight from "./assets/chevrons-right.svg";
+import chevronRightWhite from "./assets/chevrons-right-white.svg";
 import "./SwipeMe.css";
 
 import PropTypes from "prop-types";
@@ -120,7 +122,7 @@ const SwipeMe = ({ swipeKey, setSwipeKey }) => {
         }}
       >
         <img
-          src={chevronRight}
+          src={chevronRightWhite}
           alt="Swipe right"
           className="swipe-icon"
           style={{ transform: x.to((x) => `translateX(${x}px)`) }}

@@ -162,7 +162,7 @@ const ScrollContainer = React.forwardRef(
                 height: itemHeight,
                 color: index === middleIndex ? "crimson" : "#fafafa",
                 fontWeight: index === middleIndex ? "bold" : "normal",
-                fontSize: index === middleIndex ? "1.75rem" : "1.25rem",
+                fontSize: index === middleIndex ? "2rem" : "1.4rem",
                 borderBottom:
                   index === middleIndex + 1 || index === middleIndex - 2
                     ? "0.75px solid #282828"
