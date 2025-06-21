@@ -64,7 +64,7 @@ function App() {
                 }`}
                 onClick={() => handleSetClick(index)}
                 onKeyPress={(e) => {
-                  if (e.key === "Enter") setSelectedSet(index);
+                  if (e.key === "Enter") handleSetClick(index);
                 }} // Add keyboard support
                 role="button" // Add role for accessibility
                 tabIndex="0" // Make it focusable
