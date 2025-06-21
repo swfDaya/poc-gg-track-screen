@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./App.css";
 import ScrollContainer from "./scrollContainer";
 import helm from "./assets/helm6white.png";
@@ -18,7 +18,19 @@ const exerciseData = [
 ];
 
 function App() {
-  const [selectedSet, setSelectedSet] = useState(0);
+  const [selectedSet, setSelectedSet] = useState(1);
+
+  const [numberOfSets, setNumberOfSets] = useState(exerciseData.length); // State for number of sets
+  const setsParentRef = useRef(null); // Ref for ScrollContainer with `sets`
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (setsParentRef.current) {
+      const { offsetWidth, offsetHeight } = setsParentRef.current;
+      setDimensions({ width: offsetWidth, height: offsetHeight });
+    }
+  }, []);
+
   const [selectedWeight, setSelectedWeight] = useState(exerciseData[0].weight); // State for selected weight
   const [selectedReps, setSelectedReps] = useState(exerciseData[0].reps); // State for selected reps
   const [refreshKey, setRefreshKey] = useState(0);
@@ -68,36 +80,47 @@ function App() {
   return (
     <div className="app-root">
       <div className="body-root">
-        <div className="body-root-header" role="heading" tabIndex="0">
-          2. Shoulder press
-        </div>
-        <div className="body-root-sets">
-          <div className="body-root-sets-legend">
-            <p>set</p>
-            <p>weight</p>
-            <p>reps</p>
+        <div className="body-root-current-set">
+          <div style={{ width: "100%", textAlign: "center" }}>Today</div>
+          <div className="body-root-current-set-data">
+            <p>Set {selectedSet + 1}</p>
+            <p>10 kg</p>
+            <p>16 s</p>
           </div>
-          <div className="body-root-sets-data">
-            {exerciseData.map((exercise, index) => (
+        </div>
+        <div className="body-root-sets-select" ref={setsParentRef}>
+          {[1, 2, 3, 4, 5].map((set, index) => {
+            const stepCircleSize = dimensions.height * 0.6;
+            const innerCircleSize = dimensions.height * 0.59;
+            return (
               <div
-                key={exercise.set}
-                className={`body-root-sets-each ${
+                key={index}
+                onClick={() => handleSetClick(index)}
+                className={`step-circle ${
                   selectedSet === index ? "selected" : ""
                 }`}
-                onClick={() => handleSetClick(index)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") setSelectedSet(index);
-                }} // Add keyboard support
-                role="button" // Add role for accessibility
-                tabIndex="0" // Make it focusable
+                style={{
+                  width: stepCircleSize,
+                  height: stepCircleSize,
+                }}
               >
-                <p>{exercise.set}</p>
-                <p>{exercise.weight}</p>
-                <p>{exercise.reps}</p>
+                <p>{set}</p>
+                {/* <div
+                  className={`step-inner-circle ${
+                    selectedSet === index ? "selected" : ""
+                  }`}
+                  style={{
+                    width: innerCircleSize,
+                    height: innerCircleSize,
+                  }}
+                >
+                  <p>{set}</p>
+                </div> */}
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
+
         <div className="body-root-control-new">
           <div className="body-root-control-weights-scroll-container">
             <ScrollContainer

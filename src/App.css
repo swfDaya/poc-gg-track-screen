@@ -19,6 +19,101 @@
   column-gap: 5px; /* Gap between columns */
 }
 
+.body-root-current-set {
+  grid-row: 4; /* Uses the 4th row */
+  grid-column: 1 / 11; /* Occupies all columns of the 1st row */
+
+  /* background-color: lightcoral; */
+
+  display: grid;
+  grid-template-rows: 1fr 2fr; /* 2 rows */
+  grid-template-columns: 1fr; /* 4 equal columns */
+
+  color: white; /* Text color */
+  font-weight: bold; /* Bold text */
+  font-size: 1.25rem;
+}
+
+.body-root-current-set p:first-of-type {
+  color: crimson;
+}
+
+.body-root-current-set-data {
+  grid-row: 2; /* Uses the 1st row */
+  grid-column: 1; /* Occupies all columns of the 1st row */
+  background-color: #282828;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  display: grid;
+  grid-template-rows: 1fr; /* 3 equal rows */
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  place-items: center; /* Center content vertically and horizontally */
+}
+
+.body-root-sets-select {
+  grid-row: 5; /* Uses the 5th row */
+  grid-column: 1 / 11; /* Occupies all columns of the 1st row */
+  /* background-color: lightseagreen; Light background color */
+  display: flex;
+  flex-direction: row; /* Arrange children in a single row */
+  overflow: hidden;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+}
+
+.body-root-sets-select-each {
+  aspect-ratio: 1 / 1; /* Ensures it's a perfect square */
+  border-radius: 50%; /* Turns the square into a circle */
+  background-color: crimson;
+  /* position: absolute; /* Optional: position within parent */
+  /* top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); Centers the circle */
+}
+
+.step-circle {
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  border: 2px solid transparent;
+  margin-left: -8px; /* overlap for seamless pill shape */
+  z-index: 1;
+  position: relative;
+  background-color: #282828;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.step-circle:first-child {
+  margin-left: 0;
+}
+
+.step-circle.selected {
+  /* background-color: white; */
+  color: crimson; /* Highlighted text color */
+  z-index: 2;
+  font-size: 2rem;
+}
+
+.step-inner-circle {
+  background-color: #282828;
+  z-index: 3;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.step-inner-circle.selected {
+  display: flex;
+  font-size: 2rem;
+}
+
 .body-root-header {
   grid-row: 1; /* Uses the 1st row */
   grid-column: 1 / 11; /* Occupies all columns of the 1st row */
