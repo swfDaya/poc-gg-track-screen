@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import "./Tabs.css";
 
 // Component definitions moved outside for better performance
-const PreviousWorkoutsComponent = ({
-  exerciseDataPrevious,
+// Reusable workout component that handles both previous and today's workout data
+const WorkoutComponent = ({
+  exerciseData,
   selectedSet,
   handleSetClick,
+  keyPrefix = "workout",
+  emptyStateMessage = "No workout data available",
 }) => (
   <div className="previous-workouts-container">
     {/* First column - 30% width */}
@@ -27,28 +30,29 @@ const PreviousWorkoutsComponent = ({
 
     {/* Second column - 70% width */}
     <div className="previous-workouts-data">
-      {exerciseDataPrevious && exerciseDataPrevious.length > 0 ? (
-        exerciseDataPrevious.map((exercise, index) => {
+      {exerciseData && exerciseData.length > 0 ? (
+        exerciseData.map((exercise, index) => {
           const isSelected = index === selectedSet;
           return (
-            <div
-              key={`prev-set-${exercise.set}`}
+            <button
+              key={`${keyPrefix}-set-${exercise.set}`}
               className={`workout-column ${isSelected ? "selected" : ""}`}
               style={{
                 backgroundColor: isSelected ? "crimson" : "transparent",
                 cursor: "pointer",
+                border: "none",
+                padding: 0,
+                margin: 0,
+                width: "30%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                borderTopLeftRadius: isSelected ? "8px" : "0",
+                borderTopRightRadius: isSelected ? "8px" : "0",
               }}
               onClick={() => {
                 handleSetClick(index);
               }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleSetClick(index);
-                }
-              }}
-              tabIndex={0}
-              role="button"
               aria-label={`Select set ${exercise.set}`}
             >
               <div
@@ -62,7 +66,7 @@ const PreviousWorkoutsComponent = ({
               <div
                 className="workout-cell"
                 style={{
-                  color: isSelected ? "black" : "white",
+                  color: isSelected ? "black" : "#fafafa",
                 }}
               >
                 {exercise.weight}
@@ -70,23 +74,23 @@ const PreviousWorkoutsComponent = ({
               <div
                 className="workout-cell"
                 style={{
-                  color: isSelected ? "black" : "white",
+                  color: isSelected ? "black" : "#fafafa",
                 }}
               >
                 {exercise.reps}
               </div>
-            </div>
+            </button>
           );
         })
       ) : (
-        <p>No previous workout data available</p>
+        <p>{emptyStateMessage}</p>
       )}
     </div>
   </div>
 );
 
-PreviousWorkoutsComponent.propTypes = {
-  exerciseDataPrevious: PropTypes.arrayOf(
+WorkoutComponent.propTypes = {
+  exerciseData: PropTypes.arrayOf(
     PropTypes.shape({
       set: PropTypes.number.isRequired,
       weight: PropTypes.number.isRequired,
@@ -95,109 +99,16 @@ PreviousWorkoutsComponent.propTypes = {
   ),
   selectedSet: PropTypes.number,
   handleSetClick: PropTypes.func,
+  keyPrefix: PropTypes.string,
+  emptyStateMessage: PropTypes.string,
 };
 
-PreviousWorkoutsComponent.defaultProps = {
-  exerciseDataPrevious: [],
+WorkoutComponent.defaultProps = {
+  exerciseData: [],
   selectedSet: 0,
   handleSetClick: () => {},
-};
-
-const TodayWorkoutComponent = ({
-  exerciseDataToday,
-  selectedSet,
-  handleSetClick,
-}) => (
-  <div className="previous-workouts-container">
-    {/* First column - 30% width */}
-    <div className="previous-workouts-labels">
-      <div className="previous-workouts-label-item">
-        <p>set</p>
-      </div>
-      <div className="previous-workouts-label-item">
-        <p>weight</p>
-      </div>
-      <div className="previous-workouts-label-item">
-        <p>reps</p>
-      </div>
-    </div>
-
-    {/* Second column - 70% width */}
-    <div className="previous-workouts-data">
-      {exerciseDataToday && exerciseDataToday.length > 0 ? (
-        exerciseDataToday.map((exercise, index) => {
-          const isSelected = index === selectedSet;
-          return (
-            <div
-              key={`today-set-${exercise.set}`}
-              className={`workout-column ${isSelected ? "selected" : ""}`}
-              style={{
-                backgroundColor: isSelected ? "crimson" : "transparent",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                handleSetClick(index);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleSetClick(index);
-                }
-              }}
-              tabIndex={0}
-              role="button"
-              aria-label={`Select set ${exercise.set}`}
-            >
-              <div
-                className="workout-cell"
-                style={{
-                  color: isSelected ? "black" : "crimson",
-                }}
-              >
-                {exercise.set}
-              </div>
-              <div
-                className="workout-cell"
-                style={{
-                  color: isSelected ? "black" : "white",
-                }}
-              >
-                {exercise.weight}
-              </div>
-              <div
-                className="workout-cell"
-                style={{
-                  color: isSelected ? "black" : "white",
-                }}
-              >
-                {exercise.reps}
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <p>No workout data for today</p>
-      )}
-    </div>
-  </div>
-);
-
-TodayWorkoutComponent.propTypes = {
-  exerciseDataToday: PropTypes.arrayOf(
-    PropTypes.shape({
-      set: PropTypes.number.isRequired,
-      weight: PropTypes.number.isRequired,
-      reps: PropTypes.number.isRequired,
-    })
-  ),
-  selectedSet: PropTypes.number,
-  handleSetClick: PropTypes.func,
-};
-
-TodayWorkoutComponent.defaultProps = {
-  exerciseDataToday: [],
-  selectedSet: 0,
-  handleSetClick: () => {},
+  keyPrefix: "workout",
+  emptyStateMessage: "No workout data available",
 };
 
 export default function Tabs({
@@ -208,32 +119,39 @@ export default function Tabs({
 }) {
   const [activeTab, setActiveTab] = useState(0);
 
-  const tabs = [
-    {
-      id: 0,
-      label: "Previous",
-      type: "previous",
-      content: (
-        <PreviousWorkoutsComponent
-          exerciseDataPrevious={exerciseDataPrevious}
-          selectedSet={selectedSet}
-          handleSetClick={handleSetClick}
-        />
-      ),
-    },
-    {
-      id: 1,
-      label: "Today",
-      type: "today",
-      content: (
-        <TodayWorkoutComponent
-          exerciseDataToday={exerciseDataToday}
-          selectedSet={selectedSet}
-          handleSetClick={handleSetClick}
-        />
-      ),
-    },
-  ];
+  const tabs = useMemo(
+    () => [
+      {
+        id: 0,
+        label: "Previous",
+        type: "previous",
+        content: (
+          <WorkoutComponent
+            exerciseData={exerciseDataPrevious}
+            selectedSet={selectedSet}
+            handleSetClick={handleSetClick}
+            keyPrefix="prev"
+            emptyStateMessage="No previous workout data available"
+          />
+        ),
+      },
+      {
+        id: 1,
+        label: "Today",
+        type: "today",
+        content: (
+          <WorkoutComponent
+            exerciseData={exerciseDataToday}
+            selectedSet={selectedSet}
+            handleSetClick={handleSetClick}
+            keyPrefix="today"
+            emptyStateMessage="No workout data for today"
+          />
+        ),
+      },
+    ],
+    [exerciseDataPrevious, exerciseDataToday, selectedSet, handleSetClick]
+  );
 
   return (
     <div className="tabs-container">
@@ -285,25 +203,14 @@ export default function Tabs({
             <motion.div
               key={activeTab}
               className="content-panel"
-              initial={{
-                opacity: 0,
-                y: activeTab === 0 ? -20 : 20,
-                rotateX: 90,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                rotateX: 0,
-              }}
-              exit={{
-                opacity: 0,
-                y: activeTab === 0 ? 20 : -20,
-                rotateX: -90,
-              }}
+              initial={{ x: 300, scaleX: 0.3, opacity: 0 }}
+              animate={{ x: 0, scaleX: 1, opacity: 1 }}
+              exit={{ x: -300, scaleX: 0.3, opacity: 0 }}
               transition={{
-                duration: 0.2,
-                ease: "easeInOut",
-                rotateX: { duration: 0.3 },
+                type: "spring",
+                damping: 35,
+                stiffness: 800,
+                opacity: { duration: 0.025 },
               }}
             >
               {/* Content Div */}

@@ -76,7 +76,7 @@
 }
 
 .tab-button.active {
-  color: white;
+  color: #fafafa;
 }
 
 .tab-button.inactive {
@@ -161,9 +161,9 @@
   color: crimson;
 }
 
-/* Remaining rows of labels - white */
+/* Remaining rows of labels - #fafafa */
 .previous-workouts-label-item:not(:first-child) {
-  color: white;
+  color: #fafafa;
 }
 
 .previous-workouts-data {
@@ -198,7 +198,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: white;
+  color: #fafafa;
   background-color: transparent;
   font-weight: bold;
   font-size: 1.5rem;
@@ -211,9 +211,9 @@
   color: crimson;
 }
 
-/* Remaining cells of each workout column (weight, reps) - white */
+/* Remaining cells of each workout column (weight, reps) - #fafafa */
 .workout-cell:not(:first-child) {
-  color: white;
+  color: #fafafa;
 }
 
 .workout-cell:last-child {

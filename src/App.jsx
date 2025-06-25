@@ -204,24 +204,59 @@ function App() {
     <div className="app-root">
       <div className="body-root">
         <div className="body-root-complete">
-          {/* <Timer
-            seconds={timerSeconds}
-            setSeconds={setTimerSeconds}
-            initialSeconds={timerInitialSeconds}
-            isRunning={timerIsRunning}
-            isFinished={timerIsFinished}
-            onStart={handleTimerStart}
-            onPause={handleTimerPause}
-            onFinish={handleTimerFinish}
-            onReset={handleTimerReset}
-          /> */}
-          {/* <div className="body-root-complete-ex-data"></div> */}
-          <Tabs
-            exerciseDataPrevious={exerciseDataPrevious}
-            exerciseDataToday={exerciseDataToday}
-            selectedSet={selectedSet}
-            handleSetClick={handleSetClick}
-          />
+          <AnimatePresence mode="popLayout">
+            {inRest ? (
+              <motion.div
+                key="timer-mode"
+                className="timer-mode-content"
+                style={{ width: "100%", height: "100%" }}
+                initial={{ x: 300, scaleX: 0.3, opacity: 0 }}
+                animate={{ x: 0, scaleX: 1, opacity: 1 }}
+                exit={{ x: -300, scaleX: 0.3, opacity: 0 }}
+                transition={{
+                  type: "spring",
+                  damping: 20,
+                  stiffness: 400,
+                  opacity: { duration: 0.2 },
+                }}
+              >
+                <Timer
+                  seconds={timerSeconds}
+                  setSeconds={setTimerSeconds}
+                  initialSeconds={timerInitialSeconds}
+                  isRunning={timerIsRunning}
+                  isFinished={timerIsFinished}
+                  onStart={handleTimerStart}
+                  onPause={handleTimerPause}
+                  onFinish={handleTimerFinish}
+                  onReset={handleTimerReset}
+                  className="timer-fullscreen"
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="tabs-mode"
+                className="tabs-mode-content"
+                style={{ width: "100%", height: "100%" }}
+                initial={{ x: 300, scaleX: 0.3, opacity: 0 }}
+                animate={{ x: 0, scaleX: 1, opacity: 1 }}
+                exit={{ x: -300, scaleX: 0.3, opacity: 0 }}
+                transition={{
+                  type: "spring",
+                  damping: 20,
+                  stiffness: 400,
+                  opacity: { duration: 0.2 },
+                }}
+              >
+                <Tabs
+                  exerciseDataPrevious={exerciseDataPrevious}
+                  exerciseDataToday={exerciseDataToday}
+                  selectedSet={selectedSet}
+                  handleSetClick={handleSetClick}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <div className="body-root-current-set">
           <div style={{ width: "100%", textAlign: "center" }}></div>

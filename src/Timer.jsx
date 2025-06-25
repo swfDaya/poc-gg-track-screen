@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import "./Timer.css";
 
 export default function Timer({
@@ -13,6 +14,8 @@ export default function Timer({
   onPause,
   onFinish,
   onReset,
+  style,
+  className,
 }) {
   const intervalRef = useRef(null);
 
@@ -42,17 +45,17 @@ export default function Timer({
   }, [isRunning, seconds, onFinish, setSeconds]);
 
   const progress = ((initialSeconds - seconds) / initialSeconds) * 100;
-  const circumference = 2 * Math.PI * 45;
+  const circumference = 2 * Math.PI * 35; // Reduced from 45 to 35
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="timer-element">
+    <div className={`timer-element ${className || ""}`} style={style}>
       <svg className="timer-circle" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" className="timer-circle-bg" />
+        <circle cx="50" cy="50" r="35" className="timer-circle-bg" />
         <circle
           cx="50"
           cy="50"
-          r="45"
+          r="35"
           className={`timer-circle-progress ${isFinished ? "finished" : ""} ${
             isRunning ? "running" : ""
           }`}
@@ -69,3 +72,17 @@ export default function Timer({
     </div>
   );
 }
+
+Timer.propTypes = {
+  seconds: PropTypes.number.isRequired,
+  setSeconds: PropTypes.func.isRequired,
+  initialSeconds: PropTypes.number.isRequired,
+  isRunning: PropTypes.bool.isRequired,
+  isFinished: PropTypes.bool.isRequired,
+  onStart: PropTypes.func,
+  onPause: PropTypes.func,
+  onFinish: PropTypes.func,
+  onReset: PropTypes.func,
+  style: PropTypes.object,
+  className: PropTypes.string,
+};
