@@ -81,15 +81,18 @@ function App() {
     setTimerIsFinished(true);
   };
 
-  const handleTimerReset = () => {
+  const handleTimerReset = (autoStart = false) => {
     setTimerIsRunning(false);
     setTimerSeconds(timerInitialSeconds);
     setTimerIsFinished(false);
-    // Automatically start the timer after reset
-    setTimeout(() => {
-      setTimerIsRunning(true);
-    }, 100);
+    if (autoStart) {
+      setTimeout(() => {
+        setTimerIsRunning(true);
+      }, 100);
+    }
   };
+
+  // Removed duplicate handleRestRewind declaration to fix redeclaration error
 
   const handleSetClick = (index) => {
     setSelectedSet(index);
@@ -114,15 +117,15 @@ function App() {
   };
 
   const handleCheckClick = () => {
-    if (navigator.vibrate) {
-      navigator.vibrate(50);
-    }
+    // TODO: Implement check click handler logic here
   };
-
   // Rest button handlers
   const handleRestAdd10 = () => {
     setTimerSeconds((prev) => prev + 10);
-    setTimerInitialSeconds((prev) => prev + 10);
+    // Only update initial seconds if timer is not running or finished
+    if (!timerIsRunning || timerIsFinished) {
+      setTimerInitialSeconds((prev) => prev + 10);
+    }
   };
 
   const handleRestRewind = () => {
@@ -143,7 +146,10 @@ function App() {
 
   const handleRestAdd30 = () => {
     setTimerSeconds((prev) => prev + 30);
-    setTimerInitialSeconds((prev) => prev + 30);
+    // Only update initial seconds if timer is not running or finished
+    if (!timerIsRunning || timerIsFinished) {
+      setTimerInitialSeconds((prev) => prev + 30);
+    }
   };
 
   const stepCircleSize = dimensions.height * 0.6;
