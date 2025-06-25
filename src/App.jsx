@@ -7,7 +7,12 @@ import helm from "./assets/helm6white.png";
 import check from "./assets/check.svg";
 import clock from "./assets/clock.svg";
 import reset from "./assets/reset.svg";
+import play from "./assets/play.svg";
+import pause from "./assets/pause.svg";
+import rewind from "./assets/rewind.svg";
+import stopCircle from "./assets/stop-circle.svg";
 import SwipeMe from "./SwipeMe";
+import Timer from "./Timer";
 
 const exerciseData = [
   { set: 1, weight: 10, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
@@ -18,11 +23,16 @@ const exerciseData = [
 ];
 
 function App() {
-  const [selectedSet, setSelectedSet] = useState(1);
-
-  const [numberOfSets, setNumberOfSets] = useState(exerciseData.length); // State for number of sets
-  const setsParentRef = useRef(null); // Ref for ScrollContainer with `sets`
+  const [selectedSet, setSelectedSet] = useState(0);
+  const [numberOfSets, setNumberOfSets] = useState(exerciseData.length);
+  const setsParentRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  // Timer state
+  const [timerSeconds, setTimerSeconds] = useState(120);
+  const [timerInitialSeconds, setTimerInitialSeconds] = useState(120);
+  const [timerIsRunning, setTimerIsRunning] = useState(false);
+  const [timerIsFinished, setTimerIsFinished] = useState(false);
 
   useEffect(() => {
     if (setsParentRef.current) {
@@ -31,8 +41,12 @@ function App() {
     }
   }, []);
 
-  const [selectedWeight, setSelectedWeight] = useState(exerciseData[0].weight); // State for selected weight
-  const [selectedReps, setSelectedReps] = useState(exerciseData[0].reps); // State for selected reps
+  const [selectedWeight, setSelectedWeight] = useState(
+    exerciseData[selectedSet].weight
+  );
+  const [selectedReps, setSelectedReps] = useState(
+    exerciseData[selectedSet].reps
+  );
   const [refreshKey, setRefreshKey] = useState(0);
 
   const addEmptyElements = (array) => ["", ...array, ""];
@@ -41,81 +55,178 @@ function App() {
   const weights = addEmptyElements(
     Array.from({ length: 200 }, (_, i) => (i + 1) * 0.25)
   );
-  const [rotation, setRotation] = useState(0); // State to track image rotation
-  const repsRef = useRef(null); // Ref for ScrollContainer with `sets`
-  const weightsRef = useRef(null); // Ref for ScrollContainer with `weights`
+  const [rotation, setRotation] = useState(0);
+  const repsRef = useRef(null);
+  const weightsRef = useRef(null);
 
-  const [swipeKey, setSwipeKey] = useState(0); // State to trigger re-render of SwipeMe
+  const [swipeKey, setSwipeKey] = useState(0);
+  const [inRest, setInRest] = useState(false);
+
+  // Timer control functions
+  const handleTimerStart = () => {
+    if (timerIsFinished) {
+      setTimerSeconds(timerInitialSeconds);
+      setTimerIsFinished(false);
+    }
+    setTimerIsRunning(true);
+  };
+
+  const handleTimerPause = () => {
+    setTimerIsRunning(false);
+  };
+
+  const handleTimerFinish = () => {
+    setTimerIsRunning(false);
+    setTimerSeconds(0);
+    setTimerIsFinished(true);
+  };
+
+  const handleTimerReset = () => {
+    setTimerIsRunning(false);
+    setTimerSeconds(timerInitialSeconds);
+    setTimerIsFinished(false);
+    // Automatically start the timer after reset
+    setTimeout(() => {
+      setTimerIsRunning(true);
+    }, 100);
+  };
 
   const handleSetClick = (index) => {
     setSelectedSet(index);
-    setSelectedWeight(exerciseData[index].weight); // Update selected weight based on set
-    setSelectedReps(exerciseData[index].reps); // Update selected reps based on set
-    setRefreshKey((prev) => prev + 1); // Always increment to force remount
+    setSelectedWeight(exerciseData[index].weight);
+    setSelectedReps(exerciseData[index].reps);
+    setRefreshKey((prev) => prev + 1);
   };
 
   // Haptic feedback handlers
   const handleResetClick = () => {
-    // Haptic feedback
     if (navigator.vibrate) {
       navigator.vibrate(50);
     }
-    setRefreshKey((prev) => prev + 1); // Always increment to force remount
+    setRefreshKey((prev) => prev + 1);
   };
 
   const handleClockClick = () => {
-    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+    setInRest((prev) => !prev);
+  };
+
+  const handleCheckClick = () => {
     if (navigator.vibrate) {
       navigator.vibrate(50);
     }
   };
 
-  const handleCheckClick = () => {
-    // Haptic feedback
-    if (navigator.vibrate) {
-      navigator.vibrate(50);
+  // Rest button handlers
+  const handleRestAdd10 = () => {
+    setTimerSeconds((prev) => prev + 10);
+    setTimerInitialSeconds((prev) => prev + 10);
+  };
+
+  const handleRestRewind = () => {
+    handleTimerReset();
+  };
+
+  const handleRestPlay = () => {
+    if (timerIsRunning) {
+      handleTimerPause();
+    } else {
+      handleTimerStart();
     }
   };
+
+  const handleRestStop = () => {
+    handleTimerFinish();
+  };
+
+  const handleRestAdd30 = () => {
+    setTimerSeconds((prev) => prev + 30);
+    setTimerInitialSeconds((prev) => prev + 30);
+  };
+
+  const stepCircleSize = dimensions.height * 0.6;
+
+  // Define rest button handlers array
+  const restHandlers = [
+    handleRestAdd10,
+    handleRestRewind,
+    handleRestPlay,
+    handleRestStop,
+    handleRestAdd30,
+  ];
+
+  const displayItems = !inRest
+    ? [1, 2, 3, 4, 5].map((num, index) => <p key={index}>{num}</p>)
+    : [
+        <span key="add10">+10</span>,
+        <img key="rewind" src={rewind} alt="Rewind" className="button-icon" />,
+        <img
+          key="play-pause"
+          src={timerIsRunning ? pause : play}
+          alt={timerIsRunning ? "Pause" : "Play"}
+          className="button-icon"
+        />,
+        <img key="stop" src={stopCircle} alt="Stop" className="button-icon" />,
+        <span key="add30">+30</span>,
+      ];
 
   return (
     <div className="app-root">
       <div className="body-root">
+        <div className="body-root-complete">
+          <Timer
+            seconds={timerSeconds}
+            setSeconds={setTimerSeconds}
+            initialSeconds={timerInitialSeconds}
+            isRunning={timerIsRunning}
+            isFinished={timerIsFinished}
+            onStart={handleTimerStart}
+            onPause={handleTimerPause}
+            onFinish={handleTimerFinish}
+            onReset={handleTimerReset}
+          />
+        </div>
         <div className="body-root-current-set">
-          <div style={{ width: "100%", textAlign: "center" }}>Today</div>
+          <div style={{ width: "100%", textAlign: "center" }}></div>
           <div className="body-root-current-set-data">
-            <p>Set {selectedSet + 1}</p>
-            <p>10 kg</p>
-            <p>16 s</p>
+            {!inRest ? (
+              <>
+                <p>Set 1</p>
+                <p>- -</p>
+                <p>- -</p>
+              </>
+            ) : (
+              <>
+                <div className="body-root-current-date">
+                  <p>27 Jun 25</p>
+                </div>
+                <div className="body-root-current-time">
+                  <p>01 : 27 : 54</p>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="body-root-sets-select" ref={setsParentRef}>
-          {[1, 2, 3, 4, 5].map((set, index) => {
-            const stepCircleSize = dimensions.height * 0.6;
-            const innerCircleSize = dimensions.height * 0.59;
+          {displayItems.map((content, index) => {
+            const clickHandler = !inRest
+              ? () => handleSetClick(index)
+              : restHandlers[index];
             return (
               <div
                 key={index}
-                onClick={() => handleSetClick(index)}
+                onClick={clickHandler}
                 className={`step-circle ${
-                  selectedSet === index ? "selected" : ""
+                  !inRest && selectedSet === index ? "selected" : ""
                 }`}
                 style={{
                   width: stepCircleSize,
                   height: stepCircleSize,
                 }}
               >
-                <p>{set}</p>
-                {/* <div
-                  className={`step-inner-circle ${
-                    selectedSet === index ? "selected" : ""
-                  }`}
-                  style={{
-                    width: innerCircleSize,
-                    height: innerCircleSize,
-                  }}
-                >
-                  <p>{set}</p>
-                </div> */}
+                {content}
               </div>
             );
           })}
@@ -124,31 +235,29 @@ function App() {
         <div className="body-root-control-new">
           <div className="body-root-control-weights-scroll-container">
             <ScrollContainer
-              key={refreshKey} // Use refreshKey to force remount
+              key={refreshKey}
               data={weights}
-              selected={selectedWeight} // Example selected index for `weights`
+              selected={selectedWeight}
               ref={weightsRef}
-              isWeights={true} // Indicate this is for `weights`
-              // onScroll={() => handleScroll(weightsRef, false)} // Pass scroll handler for `weights`
-              setRotation={setRotation} // Pass setRotation to update rotation state
+              isWeights={true}
+              setRotation={setRotation}
             />
           </div>
           <div className="body-root-control-helm-scroll-container">
             <img
               src={helm || "/placeholder.svg"}
               alt="helm6 Icon"
-              style={{ transform: `rotate(${rotation * 1.25}deg)` }} // Apply rotation
+              style={{ transform: `rotate(${rotation * 1.25}deg)` }}
             />
           </div>
           <div className="body-root-control-sets-scroll-container">
             <ScrollContainer
-              key={refreshKey} // Use refreshKey to force remount
+              key={refreshKey}
               data={reps}
-              selected={selectedReps} // Example selected index for `weights`
+              selected={selectedReps}
               ref={repsRef}
-              isWeights={false} // Indicate this is for `weights`
-              // onScroll={() => handleScroll(repsRef, false)} // Pass scroll handler for `weights`
-              setRotation={setRotation} // Pass setRotation to update rotation state
+              isWeights={false}
+              setRotation={setRotation}
             />
           </div>
           <div className="body-root-control-new-save-button-container">
