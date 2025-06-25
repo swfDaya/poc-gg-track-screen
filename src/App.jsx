@@ -314,6 +314,13 @@ function App() {
               <div
                 key={index}
                 onClick={clickHandler}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    clickHandler();
+                  }
+                }}
+                role="button"
+                tabIndex="0"
                 className={`step-circle ${
                   !inRest && selectedSet === index ? "selected" : ""
                 }`}
