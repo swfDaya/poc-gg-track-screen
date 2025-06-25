@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import "./App.css";
 import ScrollContainer from "./scrollContainer";
+import { motion, AnimatePresence } from "framer-motion";
 import helm from "./assets/helm6white.png";
 import check from "./assets/check.svg";
 import clock from "./assets/clock.svg";
@@ -13,8 +14,9 @@ import rewind from "./assets/rewind.svg";
 import stopCircle from "./assets/stop-circle.svg";
 import SwipeMe from "./SwipeMe";
 import Timer from "./Timer";
+import Tabs from "./Tabs";
 
-const exerciseData = [
+const exerciseDataPrevious = [
   { set: 1, weight: 10, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
   { set: 2, weight: 15, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
   { set: 3, weight: 20, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
@@ -22,9 +24,15 @@ const exerciseData = [
   { set: 5, weight: 30, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
 ];
 
+const exerciseDataToday = [
+  { set: 1, weight: 15, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
+  { set: 2, weight: 20, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
+  { set: 3, weight: 25, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
+];
+
 function App() {
   const [selectedSet, setSelectedSet] = useState(0);
-  const [numberOfSets, setNumberOfSets] = useState(exerciseData.length);
+  const [numberOfSets, setNumberOfSets] = useState(exerciseDataPrevious.length);
   const setsParentRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -42,10 +50,10 @@ function App() {
   }, []);
 
   const [selectedWeight, setSelectedWeight] = useState(
-    exerciseData[selectedSet].weight
+    exerciseDataPrevious[selectedSet].weight
   );
   const [selectedReps, setSelectedReps] = useState(
-    exerciseData[selectedSet].reps
+    exerciseDataPrevious[selectedSet].reps
   );
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -96,8 +104,8 @@ function App() {
 
   const handleSetClick = (index) => {
     setSelectedSet(index);
-    setSelectedWeight(exerciseData[index].weight);
-    setSelectedReps(exerciseData[index].reps);
+    setSelectedWeight(exerciseDataPrevious[index].weight);
+    setSelectedReps(exerciseDataPrevious[index].reps);
     setRefreshKey((prev) => prev + 1);
   };
 
@@ -164,7 +172,9 @@ function App() {
   ];
 
   const displayItems = !inRest
-    ? [1, 2, 3, 4, 5].map((num, index) => <p key={index}>{num}</p>)
+    ? Array.from({ length: numberOfSets }, (_, i) => i + 1).map(
+        (num, index) => <p key={index}>{num}</p>
+      )
     : [
         <span key="add10">+10</span>,
         <img key="rewind" src={rewind} alt="Rewind" className="button-icon" />,
@@ -178,11 +188,23 @@ function App() {
         <span key="add30">+30</span>,
       ];
 
+  const elasticTransition = {
+    initial: { x: 300, scaleX: 0.3, opacity: 0 },
+    animate: { x: 0, scaleX: 1, opacity: 1 },
+    exit: { x: -300, scaleX: 0.3, opacity: 0 },
+    transition: {
+      type: "spring",
+      damping: 20,
+      stiffness: 400,
+      opacity: { duration: 0.2 },
+    },
+  };
+
   return (
     <div className="app-root">
       <div className="body-root">
         <div className="body-root-complete">
-          <Timer
+          {/* <Timer
             seconds={timerSeconds}
             setSeconds={setTimerSeconds}
             initialSeconds={timerInitialSeconds}
@@ -192,27 +214,60 @@ function App() {
             onPause={handleTimerPause}
             onFinish={handleTimerFinish}
             onReset={handleTimerReset}
+          /> */}
+          {/* <div className="body-root-complete-ex-data"></div> */}
+          <Tabs
+            exerciseDataPrevious={exerciseDataPrevious}
+            exerciseDataToday={exerciseDataToday}
+            selectedSet={selectedSet}
+            handleSetClick={handleSetClick}
           />
         </div>
         <div className="body-root-current-set">
           <div style={{ width: "100%", textAlign: "center" }}></div>
           <div className="body-root-current-set-data">
-            {!inRest ? (
-              <>
-                <p>Set 1</p>
-                <p>- -</p>
-                <p>- -</p>
-              </>
-            ) : (
-              <>
-                <div className="body-root-current-date">
-                  <p>27 Jun 25</p>
-                </div>
-                <div className="body-root-current-time">
-                  <p>01 : 27 : 54</p>
-                </div>
-              </>
-            )}
+            <AnimatePresence mode="popLayout">
+              {!inRest ? (
+                <motion.div
+                  key="workout-mode"
+                  className="workout-mode-content"
+                  initial={{ x: 300, scaleX: 0.3, opacity: 0 }}
+                  animate={{ x: 0, scaleX: 1, opacity: 1 }}
+                  exit={{ x: -300, scaleX: 0.3, opacity: 0 }}
+                  transition={{
+                    type: "spring",
+                    damping: 20,
+                    stiffness: 400,
+                    opacity: { duration: 0.2 },
+                  }}
+                >
+                  <p>Set 1</p>
+                  <p>- -</p>
+                  <p>- -</p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="rest-mode"
+                  className="rest-mode-content"
+                  initial={{ x: 300, scaleX: 0.3, opacity: 0 }}
+                  animate={{ x: 0, scaleX: 1, opacity: 1 }}
+                  exit={{ x: -300, scaleX: 0.3, opacity: 0 }}
+                  transition={{
+                    type: "spring",
+                    damping: 20,
+                    stiffness: 400,
+                    opacity: { duration: 0.2 },
+                  }}
+                >
+                  <div className="body-root-current-date">
+                    <p>27 Jun 25</p>
+                  </div>
+                  <div className="body-root-current-time">
+                    <p>01 : 27 : 54</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
         <div className="body-root-sets-select" ref={setsParentRef}>
@@ -280,6 +335,9 @@ function App() {
               className="save-button"
               onClick={handleClockClick}
               aria-label="Clock"
+              style={{
+                backgroundColor: inRest ? "crimson" : "#3a3a3a",
+              }}
             >
               <img className="save-icon" src={clock} alt="Clock" />
             </button>
