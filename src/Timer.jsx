@@ -42,7 +42,7 @@ export default function Timer({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, onFinish, setSeconds]);
+  }, [isRunning, seconds, onFinish, setSeconds]);
 
   const progress = ((initialSeconds - seconds) / initialSeconds) * 100;
   const circumference = 2 * Math.PI * 35; // Reduced from 45 to 35
