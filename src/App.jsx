@@ -49,12 +49,30 @@ function App() {
     }
   }, []);
 
-  const [selectedWeight, setSelectedWeight] = useState(
-    exerciseDataPrevious[selectedSet].weight
-  );
-  const [selectedReps, setSelectedReps] = useState(
-    exerciseDataPrevious[selectedSet].reps
-  );
+  const [selectedWeight, setSelectedWeight] = useState(() => {
+    // Boundary check: ensure exerciseDataPrevious has elements and selectedSet is valid
+    if (
+      exerciseDataPrevious &&
+      exerciseDataPrevious.length > 0 &&
+      selectedSet >= 0 &&
+      selectedSet < exerciseDataPrevious.length
+    ) {
+      return exerciseDataPrevious[selectedSet].weight;
+    }
+    return 0; // Default weight value
+  });
+  const [selectedReps, setSelectedReps] = useState(() => {
+    // Boundary check: ensure exerciseDataPrevious has elements and selectedSet is valid
+    if (
+      exerciseDataPrevious &&
+      exerciseDataPrevious.length > 0 &&
+      selectedSet >= 0 &&
+      selectedSet < exerciseDataPrevious.length
+    ) {
+      return exerciseDataPrevious[selectedSet].reps;
+    }
+    return 1; // Default reps value
+  });
   const [refreshKey, setRefreshKey] = useState(0);
 
   const addEmptyElements = (array) => ["", ...array, ""];
@@ -104,8 +122,22 @@ function App() {
 
   const handleSetClick = (index) => {
     setSelectedSet(index);
-    setSelectedWeight(exerciseDataPrevious[index].weight);
-    setSelectedReps(exerciseDataPrevious[index].reps);
+
+    // Boundary check: ensure exerciseDataPrevious has elements and index is valid
+    if (
+      exerciseDataPrevious &&
+      exerciseDataPrevious.length > 0 &&
+      index >= 0 &&
+      index < exerciseDataPrevious.length
+    ) {
+      setSelectedWeight(exerciseDataPrevious[index].weight);
+      setSelectedReps(exerciseDataPrevious[index].reps);
+    } else {
+      // Set default values if boundary check fails
+      setSelectedWeight(0);
+      setSelectedReps(1);
+    }
+
     setRefreshKey((prev) => prev + 1);
   };
 

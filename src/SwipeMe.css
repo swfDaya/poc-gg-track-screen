@@ -26,7 +26,7 @@
   transform: translate(-50%, -50%);
   color: rgba(255, 255, 255, 0.8);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 1.5rem;
   pointer-events: none;
   z-index: 1;
 }
@@ -61,13 +61,13 @@
 }
 
 .swipe-slider:hover {
-  background: #404040;
+  background: #e53e3e; /* Lighter crimson for hover */
   box-shadow: 0 0 0 1px #1a1a1a, 0 6px 12px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .swipe-slider:active {
-  background: #2a2a2a;
+  background: #b91c1c; /* Darker crimson for active */
   box-shadow: 0 0 0 1px #1a1a1a, 0 1px 2px rgba(0, 0, 0, 0.4),
     inset 0 2px 4px rgba(0, 0, 0, 0.3);
   transform: translateY(1px);

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -119,6 +117,10 @@ export default function Tabs({
 }) {
   const [activeTab, setActiveTab] = useState(0);
 
+  // Tab indicator positioning constants
+  const TAB_BUTTON_WIDTH = 140; // matches CSS .tab-button width
+  const TAB_INDICATOR_OFFSET = TAB_BUTTON_WIDTH / 2; // half of tab width for centering
+
   const tabs = useMemo(
     () => [
       {
@@ -170,7 +172,7 @@ export default function Tabs({
           <motion.div
             className="tabs-indicator"
             animate={{
-              x: activeTab === 0 ? -70 : 70,
+              x: activeTab === 0 ? -TAB_INDICATOR_OFFSET : TAB_INDICATOR_OFFSET,
             }}
             transition={{
               type: "spring",
