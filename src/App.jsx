@@ -236,7 +236,14 @@ function App() {
           selectedSet={selectedSet}
           handleSetClick={handleSetClick}
         />
-        <CurrentSetDisplay inRest={inRest} />
+        <CurrentSetDisplay
+          inRest={inRest}
+          selectedSet={selectedSet}
+          selectedWeight={selectedWeight}
+          selectedReps={selectedReps}
+          currentDate="28 Jun 25"
+          currentTime="01 : 27 : 54"
+        />
         <SetsSelector
           ref={setsParentRef}
           displayItems={displayItems}

@@ -59,7 +59,7 @@ const ControlPanel = ({
           <img className="save-icon" src={reset} alt="Reset" />
         </button>
       </div>
-      <div className="control-check-button-container">
+      <div className="control-clock-button-container">
         <button
           className="save-button"
           onClick={handleClockClick}
@@ -71,7 +71,7 @@ const ControlPanel = ({
           <img className="save-icon" src={clock} alt="Clock" />
         </button>
       </div>
-      <div className="control-clock-button-container">
+      <div className="control-check-button-container">
         <button className="save-button" onClick={handleCheckClick}>
           <img className="save-icon" src={check} alt="Check" />
         </button>
