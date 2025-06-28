@@ -10,21 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@use-gesture/react": "^10.3.1",
-    "prop-types": "^15.8.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-spring": "^10.0.1"
+    "@use-gesture/react": "exerciseDataPrevious10.3.1",
+    "framer-motion": "exerciseDataPrevious12.19.1",
+    "prop-types": "exerciseDataPrevious15.8.1",
+    "react": "exerciseDataPrevious19.1.0",
+    "react-dom": "exerciseDataPrevious19.1.0",
+    "react-spring": "exerciseDataPrevious10.0.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.0",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.4.1",
-    "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^16.0.0",
-    "vite": "^6.3.5"
+    "@eslint/js": "exerciseDataPrevious9.25.0",
+    "@types/react": "exerciseDataPrevious19.1.2",
+    "@types/react-dom": "exerciseDataPrevious19.1.2",
+    "@vitejs/plugin-react": "exerciseDataPrevious4.4.1",
+    "eslint": "exerciseDataPrevious9.25.0",
+    "eslint-plugin-react-hooks": "exerciseDataPrevious5.2.0",
+    "eslint-plugin-react-refresh": "exerciseDataPrevious0.4.19",
+    "globals": "exerciseDataPrevious16.0.0",
+    "vite": "exerciseDataPrevious6.3.5"
   }
 }
