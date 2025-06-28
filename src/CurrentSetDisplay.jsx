@@ -3,7 +3,14 @@ import { AnimatePresence } from "framer-motion";
 import Animation from "./Animation";
 import "./CurrentSetDisplay.css";
 
-const CurrentSetDisplay = ({ inRest }) => {
+const CurrentSetDisplay = ({
+  inRest,
+  selectedSet,
+  selectedWeight,
+  selectedReps,
+  currentDate,
+  currentTime,
+}) => {
   return (
     <div className="current-set-display">
       <div className="current-set-display-spacer"></div>
@@ -14,17 +21,17 @@ const CurrentSetDisplay = ({ inRest }) => {
               animationKey="workout-mode"
               className="workout-mode-content"
             >
-              <p>Set 1</p>
-              <p>- -</p>
-              <p>- -</p>
+              <p>Set {selectedSet + 1}</p>
+              <p>{selectedWeight || "- -"}</p>
+              <p>{selectedReps || "- -"}</p>
             </Animation>
           ) : (
             <Animation animationKey="rest-mode" className="rest-mode-content">
               <div className="current-date">
-                <p>27 Jun 25</p>
+                <p>{currentDate || "28 Jun 25"}</p>
               </div>
               <div className="current-time">
-                <p>01 : 27 : 54</p>
+                <p>{currentTime || "01 : 27 : 54"}</p>
               </div>
             </Animation>
           )}
@@ -36,6 +43,11 @@ const CurrentSetDisplay = ({ inRest }) => {
 
 CurrentSetDisplay.propTypes = {
   inRest: PropTypes.bool.isRequired,
+  selectedSet: PropTypes.number.isRequired,
+  selectedWeight: PropTypes.number.isRequired,
+  selectedReps: PropTypes.number.isRequired,
+  currentDate: PropTypes.string,
+  currentTime: PropTypes.string,
 };
 
 export default CurrentSetDisplay;
