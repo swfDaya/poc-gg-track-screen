@@ -24,11 +24,15 @@ const exerciseDataPrevious = [
   { set: 5, weight: 30, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
 ];
 
-const exerciseDataToday = [
-  { set: 1, weight: 15, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
-  { set: 2, weight: 20, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
-  { set: 3, weight: 25, reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10 },
-];
+// Move outside component to prevent regeneration on each render
+const generateExerciseData = (sets, baseWeights) =>
+  baseWeights.map((weight, index) => ({
+    set: index + 1,
+    weight,
+    reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10
+  }));
+
+const exerciseDataToday = generateExerciseData(3, [15, 20, 25]);
 
 function App() {
   const [selectedSet, setSelectedSet] = useState(0);
