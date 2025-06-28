@@ -410,7 +410,7 @@ function App() {
             </button>
           </div>
           <div className="body-root-control-new-clock-button-container">
-            <button className="save-button" onClick={handleCheckClick}>
+            <button className="save-button" onClick={handleCheckClick} aria-label="Check">
               <img className="save-icon" src={check} alt="Check" />
             </button>
           </div>
