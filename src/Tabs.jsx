@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
+import Animation from "./Animation";
 import "./Tabs.css";
 
 // Component definitions moved outside for better performance
@@ -202,13 +203,10 @@ export default function Tabs({
         {/* Rows 2-3: Content Area */}
         <div className="tabs-content">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
+            <Animation
+              animationKey={activeTab}
               className="content-panel"
-              initial={{ x: 300, scaleX: 0.3, opacity: 0 }}
-              animate={{ x: 0, scaleX: 1, opacity: 1 }}
-              exit={{ x: -300, scaleX: 0.3, opacity: 0 }}
-              transition={{
+              customTransition={{
                 type: "spring",
                 damping: 35,
                 stiffness: 800,
@@ -219,7 +217,7 @@ export default function Tabs({
               <div className={`content-div ${tabs[activeTab].type}`}>
                 {tabs[activeTab].content}
               </div>
-            </motion.div>
+            </Animation>
           </AnimatePresence>
         </div>
       </div>

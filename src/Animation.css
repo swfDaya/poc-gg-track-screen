@@ -1,0 +1,19 @@
+/* Animation component styles */
+
+/* Specific animation-related classes */
+.animated-container.timer-mode-content {
+  width: 100%;
+  height: 100%;
+}
+
+.animated-container.tabs-mode-content {
+  width: 100%;
+  height: 100%;
+}
+
+.animated-container.content-panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,63 @@
+/* SetsSelector component styles */
+/* This component replaces the body-root-sets-select styles */
+
+.sets-selector {
+  grid-row: 5; /* Uses the 5th row */
+  grid-column: 1 / 11; /* Occupies all columns of the 1st row */
+  display: flex;
+  flex-direction: row; /* Arrange children in a single row */
+  overflow: hidden;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+}
+
+.step-circle {
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  border: 2px solid transparent;
+  margin-left: -8px; /* overlap for seamless pill shape */
+  z-index: 1;
+  position: relative;
+  background-color: #282828;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  /* Remove default button styling */
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.step-circle:first-child {
+  margin-left: 0;
+}
+
+.step-circle.selected {
+  color: crimson; /* Highlighted text color */
+  z-index: 2;
+  font-size: 2rem;
+}
+
+.step-inner-circle {
+  background-color: #282828;
+  z-index: 3;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.step-inner-circle.selected {
+  display: flex;
+  font-size: 2rem;
+}
