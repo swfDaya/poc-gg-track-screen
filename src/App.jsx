@@ -25,7 +25,7 @@ const generateExerciseData = (sets, baseWeights) =>
   baseWeights.map((weight, index) => ({
     set: index + 1,
     weight,
-    reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10
+    reps: Math.floor(Math.random() * (20 - 10 + 1)) + 10,
   }));
 
 const exerciseDataToday = generateExerciseData(3, [15, 20, 25]);
@@ -205,8 +205,8 @@ function App() {
   ];
 
   const displayItems = !inRest
-    ? Array.from({ length: numberOfSets }, (_, i) => i + 1).map((num) => (
-        <p key={`set-${num}`}>{num}</p>
+    ? Array.from({ length: numberOfSets }, (_, i) => (
+        <p key={`set-${i + 1}`}>{i + 1}</p>
       ))
     : [
         <span key="add10">+10</span>,
@@ -219,7 +219,9 @@ function App() {
         />,
         <img key="stop" src={stopCircle} alt="Stop" className="button-icon" />,
         <span key="add30">+30</span>,
-      ];  return (
+      ];
+
+  return (
     <div className="app-root">
       <div className="body-root">
         <MainContent
