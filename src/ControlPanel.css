@@ -1,0 +1,154 @@
+/* ControlPanel component styles */
+/* This component replaces the body-root-control-new styles */
+
+.control-panel {
+  grid-row: 6 / 9; /* Uses the 2nd and 3rd rows */
+  grid-column: 1 / 11; /* Occupies all columns of those rows */
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 equal columns */
+  grid-template-rows: repeat(9, 1fr); /* 9 equal rows */
+  background-color: #282828; /* Dark background color */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-radius: 16px; /* Rounded corners */
+  position: relative; /* Important for absolute positioning of children */
+  overflow: visible; /* Allow button to protrude outside */
+  isolation: isolate; /* Creates new stacking context */
+}
+
+.control-weights-container {
+  grid-row: 2/8; /* Rows 2-7 */
+  grid-column: 2/4; /* Columns 2-3 */
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  scroll-snap-type: y mandatory; /* Enable vertical scroll snap */
+  overflow-y: auto; /* Ensure scrolling is enabled */
+  height: 100%; /* Adjust as needed */
+  scroll-behavior: smooth;
+}
+
+.control-reps-container {
+  grid-row: 2/8; /* Rows 2-7 */
+  grid-column: 5/7; /* Columns 5-6 */
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  scroll-snap-type: y mandatory; /* Enable vertical scroll snap */
+  overflow-y: auto; /* Ensure scrolling is enabled */
+  height: 100%; /* Adjust as needed */
+  scroll-behavior: smooth;
+}
+
+.control-helm-container {
+  grid-row: 2/8; /* Rows 2-7 */
+  grid-column: 4/5; /* Column 4 */
+  display: flex;
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+}
+
+.control-helm-container > img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover; /* Cover the entire container */
+}
+
+.control-reset-button-container {
+  grid-row: 9; /* Last row */
+  grid-column: 2; /* Column 2 */
+  position: relative; /* Positioning context for the button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-check-button-container {
+  grid-row: 9; /* Last row */
+  grid-column: 4; /* Column 4 */
+  position: relative; /* Positioning context for the button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-clock-button-container {
+  grid-row: 9; /* Last row */
+  grid-column: 6; /* Column 6 */
+  position: relative; /* Positioning context for the button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-button {
+  position: absolute;
+  width: 60px; /* Fixed size for perfect circle */
+  height: 60px; /* Fixed size for perfect circle */
+  border-radius: 50%;
+  background: #3a3a3a;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  /* Position so half the button protrudes below the grid */
+  bottom: -30px; /* Half the button height to make it protrude */
+
+  /* Remove default button outline and focus styles */
+  outline: none;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  -webkit-touch-callout: none; /* Disable callout on iOS */
+  -webkit-user-select: none; /* Disable text selection */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  /* Outer shadow for depth */
+  box-shadow: 0 0 0 1px #1a1a1a, 0 4px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.save-button:focus {
+  outline: none; /* Remove focus outline */
+}
+
+.save-button:hover {
+  background: #404040;
+  box-shadow: 0 0 0 1px #1a1a1a, 0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.save-button:active {
+  background: #2a2a2a;
+  box-shadow: 0 0 0 1px #1a1a1a, 0 1px 2px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+.save-icon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1); /* Makes the icon white */
+  transition: transform 0.3s ease;
+  pointer-events: none; /* Prevents icon from interfering with button clicks */
+}
+
+.save-button:hover .save-icon {
+  transform: scale(1.1); /* Slight scale effect on hover */
+}
+
+/* Clock button rest mode styling */
+.save-button.rest-mode {
+  background: crimson;
+}
+
+.save-button.rest-mode:hover {
+  background: #dc143c;
+}
+
+.save-button.rest-mode:active {
+  background: #b22222;
+}
